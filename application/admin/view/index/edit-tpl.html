@@ -1,0 +1,88 @@
+<script type="text/html" id="edit-tpl">
+    <div style="margin:10px">
+        <form class="layui-form" action="" lay-filter="form-edit">
+            <input type="hidden" name="id" value="{{d.user.id}}" />
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" required lay-verify="required" value="{{d.user.username}}" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码框</label>
+                <div class="layui-input-inline">
+                    <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">辅助文字</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">单选框</label>
+                <div class="layui-input-block">
+                    {{# var woman = d.user.sex === 0?'checked':'';}} {{# var man = d.user.sex === 1?'checked':'';}}
+                    <input type="radio" name="sex" value="男" title="男" {{man}} />
+                    <input type="radio" name="sex" value="女" title="女" {{woman}} />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">城市</label>
+                <div class="layui-input-block">
+                    <select name="city" lay-verify="required">
+                        <option value=""></option>
+                        {{# layui.each(d.citys,function(index,item){ }}
+                        {{# if(item.id===d.user.city){}}
+                        <option value="{{item.id}}" selected>{{item.name}}</option>
+                        {{#}else{}}
+                        <option value="{{item.id}}">{{item.name}}</option>
+                        {{#};}}
+                        {{# }); }}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">积分</label>
+                <div class="layui-input-block">
+                    <input type="number" name="experience" required lay-verify="required" value="{{d.user.experience}}" placeholder="请输入积分" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">评分</label>
+                <div class="layui-input-block">
+                    <input type="number" name="score" required lay-verify="required" value="{{d.user.score}}" placeholder="请输入评分" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">财富</label>
+                <div class="layui-input-block">
+                    <input type="number" name="wealth" required lay-verify="required" value="{{d.user.wealth}}" placeholder="请输入财富" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">职业</label>
+                <div class="layui-input-block">
+                    <select name="classify" lay-verify="required">
+                        <option value=""></option>
+                        {{# layui.each(d.classifies,function(index,item){ }}
+                        {{# if(item.id===d.user.classify){}}
+                        <option value="{{item.id}}" selected>{{item.name}}</option>
+                        {{#}else{}}
+                        <option value="{{item.id}}">{{item.name}}</option>
+                        {{#};}}
+                        {{# }); }}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">签名</label>
+                <div class="layui-input-block">
+                    <textarea name="sign" placeholder="请输入个性签名" class="layui-textarea">{{d.user.sign}}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item" style="display:none;">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formEdit">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>

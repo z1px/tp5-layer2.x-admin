@@ -17,7 +17,6 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
         table = layui.table,
         loader = layui.loader,
         navbar = layui.navbar,
-        _componentPath = 'components/',
         spa = layui.spa;
     tab = layui.tab;
     var app = {
@@ -135,12 +134,12 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                     onelevel.set({
                         remote: {
                             // url: '/datas/onelevel1.json' //远程地址
-                            url: '/data/onelevel.html' //远程地址
+                            url: $("#container").data("url-onelevel") //远程地址
                         },
                         onClicked: function(id) {
                             navbar.set({
                                 remote: {
-                                    url: '/data/navbar/id/'+id+'.html'
+                                    url: $("#container").data("url-navbar")+'?id='+id
                                 }
                             }).render(function(data) {
                                 tab.tabAdd(data);
