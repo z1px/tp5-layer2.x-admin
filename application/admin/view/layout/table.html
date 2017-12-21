@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>table</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- head begin -->
+	{include file="public:head" /}
+	<link rel="stylesheet" href="__PLUGINS__/font-awesome/css/font-awesome.min.css" media="all">
+	<link rel="stylesheet" href="__ADMIN_CSS__/app.css" media="all">
+	<!-- head end -->
+	{block name="head"}{/block}
+
+</head>
+
+<body>
+
+	<div class="kit-doc">
+		<!-- main begin -->
+		{block name="main"}{/block}
+		<!-- main end -->
+	</div>
+
+	<!-- foot begin -->
+	{include file="public:foot" /}
+	<script>
+        document.write('<script type="text/javascript" src="__ADMIN_JS__/table.js?'+Math.random()+'"><\/script>');
+	</script>
+	<!-- foot end -->
+	{block name="foot"}{/block}
+
+</body>
+
+</html>
