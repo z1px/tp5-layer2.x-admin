@@ -3,7 +3,7 @@ layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
         form = layui.form,
         laytpl = layui.laytpl,
         laydate = layui.laydate,
-        layer = layui.laydate,
+        layer = layui.layer,
         layerTips = parent.layer === undefined ? layui.layer : parent.layer; //获取父窗口的layer对象
 
     var mytable = {
@@ -47,7 +47,7 @@ layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
             },
             // 弹窗配置参数
             open:{
-                type: 1,//0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+                type: 2,//0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
                 title: "",
                 maxmin: true, //最大最小化
                 shade: 0.3, //遮罩
@@ -62,7 +62,7 @@ layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
                     content: "",
                     tpl: "#edit-tpl",
                     filter: "form-edit",
-                    submit: "formEdit"
+                    submit: "demo"
                 },
                 add:{
                     title: "添加",
@@ -71,7 +71,7 @@ layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
                     content: "",
                     tpl: "#add-tpl",
                     filter: "form-add",
-                    submit: "formAdd"
+                    submit: "demo"
                 }
             },
             form_verify:{
@@ -224,7 +224,7 @@ layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
                             }
                         });
                     }else if(_config.open.type ===2){
-                        _config.open.edit.content = _config.open.edit.url;
+                        _config.open.edit.content = _config.open.edit.url+"?id="+data.id;
                     }else {
                         _config.open.edit.content = "";
                     }
@@ -239,12 +239,58 @@ layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
                         btn: _config.open.edit.btn,
                         content: _config.open.edit.content,
                         yes: function(index, layero) {
-                            $('form[lay-filter='+_config.open.edit.filter+']').find('button[lay-submit]').click();
+                            if(_config.open.type ===2){
+                                var body = layerTips.getChildFrame('body', index);
+                                // var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                                // console.log(body.html()); //得到iframe页的body内容
+                                var form_field = body.find('form[lay-filter='+_config.open.edit.filter+']').serializeArray();
+                                var field={};
+                                if(form_field){
+                                    $.each(form_field,function (i,v){
+                                        field[v.name]=v.value;
+                                    })
+                                }
+                                var ind_load=layerTips.load(2);
+                                $.ajax({
+                                    type:"post",
+                                    url:_config.open.edit.url,
+                                    data:field,
+                                    timeout : 5000, //超时时间设置，单位毫秒
+                                    dataType:"json",
+                                    async: true, // 异步加载
+                                    beforeSend:function(){
+
+                                    },success:function(result){
+                                        layerTips.close(ind_load);
+                                        layerTips.msg(result.msg,{time: 2000});
+                                        if(result.code==1){
+                                            top_index && layerTips.close(top_index); //关闭弹出层
+                                            //同步更新缓存对应的值
+                                            obj.update(field);
+                                        }
+                                    },complete:function(XMLHttpRequest){
+                                        if(XMLHttpRequest.statusText=="timeout"){
+                                            layerTips.close(ind_load);
+                                            layerTips.msg("请求超时...");
+                                        }
+                                    },error:function(){
+                                        layerTips.close(ind_load);
+                                        layerTips.msg("请求错误");
+                                    }
+                                });
+                            }else{
+                                $('form[lay-filter='+_config.open.edit.filter+']').find('button[lay-submit]').click();
+                            }
                             // layerTips.close(index);
                             return false;
                         },
                         btn2: function(index, layero) {
-                            $('form[lay-filter='+_config.open.edit.filter+']').find('button[type="reset"]').click();
+                            if(_config.open.type ===2){
+                                var body = layerTips.getChildFrame('body', index);
+                                body.find('form[lay-filter='+_config.open.edit.filter+']').find('button[type="reset"]').click();
+                            }else{
+                                $('form[lay-filter='+_config.open.edit.filter+']').find('button[type="reset"]').click();
+                            }
                             return false;
                         },
                         success: function() {
@@ -364,12 +410,57 @@ layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
                             btn: _config.open.add.btn,
                             content: _config.open.add.content,
                             yes: function(index, layero) {
-                                $('form[lay-filter='+_config.open.add.filter+']').find('button[lay-submit]').click();
+                                if(_config.open.type ===2){
+                                    var body = layerTips.getChildFrame('body', index);
+                                    // var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                                    // console.log(body.html()); //得到iframe页的body内容
+                                    var form_field = body.find('form[lay-filter='+_config.open.add.filter+']').serializeArray();
+                                    var field={};
+                                    if(form_field){
+                                        $.each(form_field,function (i,v){
+                                            field[v.name]=v.value;
+                                        })
+                                    }
+                                    var ind_load=layerTips.load(2);
+                                    $.ajax({
+                                        type:"post",
+                                        url:_config.open.add.url,
+                                        data:field,
+                                        timeout : 5000, //超时时间设置，单位毫秒
+                                        dataType:"json",
+                                        async: true, // 异步加载
+                                        beforeSend:function(){
+
+                                        },success:function(result){
+                                            layerTips.close(ind_load);
+                                            layerTips.msg(result.msg,{time: 2000});
+                                            if(result.code==1){
+                                                top_index && layerTips.close(top_index); //关闭弹出层
+                                                tableIns.reload(); // 重新加载
+                                            }
+                                        },complete:function(XMLHttpRequest){
+                                            if(XMLHttpRequest.statusText=="timeout"){
+                                                layerTips.close(ind_load);
+                                                layerTips.msg("请求超时...");
+                                            }
+                                        },error:function(){
+                                            layerTips.close(ind_load);
+                                            layerTips.msg("请求错误");
+                                        }
+                                    });
+                                }else{
+                                    $('form[lay-filter='+_config.open.add.filter+']').find('button[lay-submit]').click();
+                                }
                                 // layerTips.close(index);
                                 return false;
                             },
                             btn2: function(index, layero) {
-                                $('form[lay-filter='+_config.open.add.filter+']').find('button[type="reset"]').click();
+                                if(_config.open.type ===2){
+                                    var body = layerTips.getChildFrame('body', index);
+                                    body.find('form[lay-filter='+_config.open.add.filter+']').find('button[type="reset"]').click();
+                                }else{
+                                    $('form[lay-filter='+_config.open.add.filter+']').find('button[type="reset"]').click();
+                                }
                                 return false;
                             },
                             success: function() {

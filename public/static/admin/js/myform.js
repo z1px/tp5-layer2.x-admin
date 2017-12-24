@@ -2,12 +2,12 @@ layui.define(['form','laydate','layer','upload'], function(exports) {
     var form = layui.form,
         laydate = layui.laydate,
         upload = layui.upload,
-        layer = layui.laydate,
+        layer = layui.layer,
         layerTips = parent.layer === undefined ? layui.layer : parent.layer; //获取父窗口的layer对象
 
     var myform = {
         config: {
-            url_myinfo:'',
+            url:'',
             upload_img:{
                 elem: '#upload_img', //绑定元素
                 url: "", //上传接口
@@ -142,7 +142,7 @@ layui.define(['form','laydate','layer','upload'], function(exports) {
                 var ind_load=layerTips.load(2);
                 $.ajax({
                     type:"post",
-                    url:_config.url_myinfo,
+                    url:_config.url,
                     data:data.field,
                     timeout : 5000, //超时时间设置，单位毫秒
                     dataType:"json",
@@ -156,6 +156,36 @@ layui.define(['form','laydate','layer','upload'], function(exports) {
                                 window.top.location.reload(); //刷新框架
                             }
                         });
+                        return false;
+                    },complete:function(XMLHttpRequest){
+                        if(XMLHttpRequest.statusText=="timeout"){
+                            layerTips.close(ind_load);
+                            layerTips.msg("请求超时...");
+                        }
+                    },error:function(){
+                        layerTips.close(ind_load);
+                        layerTips.msg("请求错误");
+                    }
+                });
+
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            });
+
+            //监听提交
+            form.on('submit(demo)', function(data){
+                var ind_load=layerTips.load(2);
+                $.ajax({
+                    type:"post",
+                    url:_config.url,
+                    data:data.field,
+                    timeout : 5000, //超时时间设置，单位毫秒
+                    dataType:"json",
+                    async: true, // 异步加载
+                    beforeSend:function(){
+
+                    },success:function(result){
+                        layerTips.close(ind_load);
+                        layerTips.msg(result.msg,{closeBtn:0});
                         return false;
                     },complete:function(XMLHttpRequest){
                         if(XMLHttpRequest.statusText=="timeout"){
