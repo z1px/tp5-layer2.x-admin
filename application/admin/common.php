@@ -24,6 +24,29 @@ function params_format($data,$filter=[]){
     }
     return $data;
 }
+/**
+ * 处理
+ * @param $data 待处理一维数组
+ * @param array $filter 列表中键值如果为空则删除，否则返回null
+ * @return array
+ */
+function result_format($data){
+    if(!empty($data)&&is_array($data)){
+        foreach ($data as $key=>$value){
+            if(is_array($value)){
+                $data[$key]=result_format($value);
+            }else{
+                $value=trim($value);
+                if(empty($value)){
+                    $data[$key]="";
+                }else{
+                    $data[$key]=$value;
+                }
+            }
+        }
+    }
+    return $data;
+}
 
 /**
  * 数据库密码加密

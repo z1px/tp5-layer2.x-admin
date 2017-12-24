@@ -36,14 +36,14 @@ class Auth {
 
 
     //权限检查
-    public function run(){
+    public function CheckAuth(&$params,$extra=[]){
 
         $request=Request::instance();
 
         // 后台模块检查
         if(strtolower($request->module()) !== "admin") self::throwError();
         // 登录注销白名单
-        if(strtolower($request->controller()) === "index" && in_array(strtolower($request->action()),["login","logout"])) return true;
+//        if(strtolower($request->controller()) === "index" && in_array(strtolower($request->action()),["login","logout"])) return true;
         // 登录检查
         $login=new Login();
         $this->result=$login->login_check();
@@ -51,5 +51,6 @@ class Auth {
         if($this->result["code"]!==1){
             self::redirect(Url::build("admin/Index/login"));
         }
+        $params = $this->result["data"];
     }
 }

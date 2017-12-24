@@ -1,0 +1,79 @@
+{{extend name="layout:form" /}
+
+{block name="main"}
+<form class="layui-form layui-form-pane" action="" method="post">
+    <div class="layui-form-item">
+        <label class="layui-form-label">账号</label>
+        <div class="layui-input-inline">
+            <input type="text" name="username" value="{$data.username}" autocomplete="off" class="layui-input layui-btn-disabled" disabled>
+            <input type="hidden" name="username" value="{$data.username}" autocomplete="off" placeholder="请输入账号" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">真实姓名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="true_name" value="{$data.true_name}" autocomplete="off" placeholder="请输入真实姓名" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机</label>
+        <div class="layui-input-inline">
+            <input type="tel" name="mobile" value="{$data.mobile}" autocomplete="off" placeholder="请输入手机号" class="layui-input" lay-verify="phone" lay-verType="tips">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">邮箱</label>
+        <div class="layui-input-inline">
+            <input type="text" name="email" value="{$data.email}" autocomplete="off" placeholder="请输入邮箱号" class="layui-input" lay-verify="email" lay-verType="tips">
+        </div>
+    </div>
+    <div class="layui-form-item" style="line-height: 120px;">
+        <label class="layui-form-label" style="margin-top: 42px;">用户头像</label>
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn" id="upload_img">
+                <i class="layui-icon">&#xe67c;</i>上传图片
+            </button>
+            <input type="hidden" name="img" value="{$data.img}">
+            <img src="{$data.img}" id="img" style="max-height: 120px;max-width: 270px;">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-inline">
+            <input type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input" lay-verify="password" lay-verType="tips">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">确认密码</label>
+        <div class="layui-input-inline">
+            <input type="password" name="check_password" placeholder="请再次输入密码" autocomplete="off" class="layui-input" lay-verify="check_password" lay-verType="tips">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <input type="hidden" name="id" value="{$data.id}">
+            <button class="layui-btn" lay-submit="" lay-filter="form_myinfo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+{/block}
+
+{block name="foot"}
+<script>
+
+    layui.use(['myform'], function() {
+        var myform = layui.myform;
+
+        myform.set({
+            'url_myinfo':"{:Url('admin/Account/myinfo')}",
+            'upload_img':{
+                'url':"{:Url('admin/Upload/img')}"
+            },
+        }).init();
+    })
+
+</script>
+{/block}

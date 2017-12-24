@@ -17,17 +17,7 @@ return [
             "icon" => "fa-cubes",
             "spread" => true,
             "children" => [
-                [
-                    "id" => "102",
-                    "title" => "表格",
-                    "icon" => "&#xe6c6;",
-                    "url" => Url::build('admin/Index/table')
-                ], [
-                    "id" => "103",
-                    "title" => "表单",
-                    "icon" => "&#xe63c;",
-                    "url" =>  Url::build('admin/Index/form')
-                ], [
+               [
                     "id" => "104",
                     "title" => "报表",
                     "icon" => "&#xe63c;",
@@ -38,27 +28,17 @@ return [
     ],
     2=>[
         [
-            "id" => "101",
-            "title" => "表格与表单",
+            "id" => "201",
+            "title" => "管理员",
             "icon" => "fa-cubes",
             "spread" => true,
             "children" => [
                 [
-                    "id" => "102",
-                    "title" => "表格",
+                    "id" => "202",
+                    "title" => "管理员列表",
                     "icon" => "&#xe6c6;",
-                    "url" => Url::build('admin/Index/table')
-                ], [
-                    "id" => "103",
-                    "title" => "表单",
-                    "icon" => "&#xe63c;",
-                    "url" =>  Url::build('admin/Index/form')
-                ], [
-                    "id" => "104",
-                    "title" => "报表",
-                    "icon" => "&#xe63c;",
-                    "url" =>  Url::build('admin/Index/echarts')
-                ],
+                    "url" => Url::build('admin/Account/table')
+                ]
             ]
         ],
     ],

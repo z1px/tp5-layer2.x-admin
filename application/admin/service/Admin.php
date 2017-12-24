@@ -130,8 +130,6 @@ class Admin extends AdminModel {
             $this->result["code"]=0;
             $this->result["msg"]="用户不存在";
         }else{
-            $data->url_edit=Url::build('admin/Account/edit',['id'=>$data->id]);
-            $data->url_del=Url::build('admin/Account/del',['id'=>$data->id]);
             $this->result["data"]=$data->append(["status_name"])->toArray();
         }
         unset($data);
@@ -197,25 +195,32 @@ class Admin extends AdminModel {
 
     public function getList($row){
 
-        if(!isset($row["pageIndex"])) $row["pageIndex"]=1;
-        if(!isset($row["pageSize"])) $row["pageSize"]=10;
+        if(!isset($row["page"])) $row["page"]=1;
+        if(!isset($row["limit"])) $row["limit"]=10;
         $where=[];
         $order="id desc";
-        if(isset($row["keyword"])) $where["username|true_name|mobile|email"]=["like","%{$row["keyword"]}%"];
+        if(isset($row["keyword"]) && !empty($row["keyword"])) $where["username|true_name|mobile|email"]=["like","%{$row["keyword"]}%"];
         array_map(function ($value) use (&$where,$row){
-                if(isset($row[$value])) $where[$value]=$row[$value];
+                if(isset($row[$value]) && !empty($row[$value])) $where[$value]=$row[$value];
             },
-            ["username","mobile","email","status"]
+            ["username","true_name","mobile","email","status"]
         );
+        if(!isset($row["begin_time"])) $row["begin_time"]="";
+        if(!isset($row["end_time"])) $row["end_time"]="";
+        if(!empty($row["begin_time"])&&empty($row["end_time"])){
+            $where["create_time"]=["egt",strtotime($row["begin_time"]." 00:00:00")];
+        }elseif(empty($row["begin_time"])&&!empty($row["end_time"])){
+            $where["create_time"]=["elt",strtotime($row["end_time"]." 23:59:59")];
+        }elseif(!empty($row["begin_time"])&&!empty($row["end_time"])){
+            $where["create_time"]=["between",[strtotime($row["begin_time"]." 00:00:00"),strtotime($row["end_time"]." 23:59:59")]];
+        }
         if(isset($row["sort"])){
             if(!empty($row["sort"])){
                 if($row["sort"]=="status_name") $row["sort"]="status";
                 $order="{$row["sort"]} {$row["order"]}";
             }
         }
-        $list=$this->field("id,username,true_name,mobile,email,status,create_time,last_login_time,ip,area")->where($where)->page($row["pageIndex"],$row["pageSize"])->order($order)->select();
-        $this->result["where"]=$where;
-        $this->result["rel"]=true;
+        $list=$this->field("id,username,true_name,mobile,email,status,create_time,last_login_time,ip,area")->where($where)->page($row["page"],$row["limit"])->order($order)->select();
         $this->result["count"]=$this->where($where)->Count();
         unset($row,$where);
         if(empty($list)){
@@ -224,8 +229,6 @@ class Admin extends AdminModel {
             foreach ($list as $key=>$value){
                 $value->last_login_time=date("Y-m-d H:i:s",$value->last_login_time);
                 $list[$key]=$value->append(["status_name"])->toArray();
-                $list[$key]["url_edit"]=Url::build('admin/Account/edit',['id'=>$value->id]);
-                $list[$key]["url_del"]=Url::build('admin/Account/del',['id'=>$value->id]);
             }
             unset($key,$value);
         }

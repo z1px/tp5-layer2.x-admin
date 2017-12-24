@@ -24,7 +24,9 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
             layer.alert('Hello ' + (str || 'test'));
         },
         config: {
-            type: 'iframe'
+            type: 'iframe',
+            url_onelevel:'',
+            url_navbar:''
         },
         set: function(options) {
             var that = this;
@@ -46,7 +48,7 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
             if (_config.type === 'page') {
                 tab.set({
                     renderType: 'page',
-                    mainUrl: 'table.html',
+                    mainUrl: 'main.html',
                     elem: '#container',
                     onSwitch: function(data) { //选项卡切换时触发
                         //console.log(data.layId); //lay-id值
@@ -134,12 +136,12 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                     onelevel.set({
                         remote: {
                             // url: '/datas/onelevel1.json' //远程地址
-                            url: $("#container").data("url-onelevel") //远程地址
+                            url: _config.url_onelevel //远程地址
                         },
                         onClicked: function(id) {
                             navbar.set({
                                 remote: {
-                                    url: $("#container").data("url-navbar")+'?id='+id
+                                    url: _config.url_navbar+'?id='+id
                                 }
                             }).render(function(data) {
                                 tab.tabAdd(data);

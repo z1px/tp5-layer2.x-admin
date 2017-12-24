@@ -88,24 +88,24 @@
                     <h1>KITADMIN LOGIN</h1>
                 </header>
                 <div class="kit-login-main">
-                    <form action="{:Url('admin/Index/login')}" class="layui-form" method="post">
+                    <form action="" class="layui-form" method="post">
                         <div class="layui-form-item">
                             <label class="kit-login-icon">
                                 <i class="layui-icon">&#xe612;</i>
                             </label>
-                            <input type="text" name="username" lay-verify="required" autocomplete="off" placeholder="这里输入用户名." class="layui-input">
+                            <input type="text" name="username" lay-verify="required" lay-verType="tips" autocomplete="off" placeholder="这里输入用户名." class="layui-input">
                         </div>
                         <div class="layui-form-item">
                             <label class="kit-login-icon">
                                 <i class="layui-icon">&#xe642;</i>
                             </label>
-                            <input type="password" name="password" lay-verify="required" autocomplete="off" placeholder="这里输入密码." class="layui-input">
+                            <input type="password" name="password" lay-verify="required" lay-verType="tips" autocomplete="off" placeholder="这里输入密码." class="layui-input">
                         </div>
                         <div class="layui-form-item">
                             <label class="kit-login-icon">
                                 <i class="layui-icon">&#xe642;</i>
                             </label>
-                            <input type="text" name="captcha" lay-verify="required" autocomplete="off" placeholder="这里输入验证码." class="layui-input">
+                            <input type="text" name="captcha" lay-verify="required" lay-verType="tips" autocomplete="off" placeholder="这里输入验证码." class="layui-input">
                             <span class="form-code" style="position:absolute;right:2px; top:2px;">
                                 <img class="captcha" src="{:captcha_src()}" onclick="this.src='{:captcha_src()}?time='+Math.random();"/>
                             </span>
@@ -115,7 +115,7 @@
                                 <input type="checkbox" name="rememberMe" value="true" lay-skin="primary" checked title="记住帐号?">
                             </div>
                             <div class="kit-pull-right">
-                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="login">
+                                <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="login">
                                     <i class="fa fa-sign-in" aria-hidden="true"></i> 登录
                                 </button>
                             </div>
@@ -139,38 +139,42 @@
 <script src="__PLUGINS__/sideshow/js/demo-1.js"></script>
 <script>
     layui.use(['layer', 'form'], function() {
-        var layer = layui.layer,
+        var layerTips = parent.layer === undefined ? layui.layer : parent.layer,
             $ = layui.jquery,
             form = layui.form;
 
-        //清理左侧菜单缓存
-        var index = layer.load(2, {
-            shade: [0.3, '#333']
-        });
-        $(window).on('load', function() {
-            layer.close(index);
-            form.on('submit(login)', function(data) {
-                var loadIndex = layer.load(2, {
-                    shade: [0.3, '#333']
-                });
-                $("form").submit();
-                // location.href = '/';
-                // $.post(data.form.action, data.field, function(res) {
-                //     if (!res.rel) {
-                //         layer.msg(res.msg, {
-                //             icon: 2
-                //         });
-                //         loadIndex && layer.close(loadIndex);
-                //         $('#changeCode').click(); //刷新验证码
-                //     } else {
-                //         setTimeout(function() {
-                //             location.href = '/'
-                //         }, 1500);
-                //     }
-                // }, 'json');
-                return false;
+        //监听提交
+        form.on('submit(login)', function(data){
+            var ind_load=layerTips.load(2);
+            $.ajax({
+                type:"post",
+                url:"{:Url('admin/Index/login')}",
+                data:data.field,
+                timeout : 5000, //超时时间设置，单位毫秒
+                dataType:"json",
+                async: true, // 异步加载
+                beforeSend:function(){
+
+                },success:function(result){
+                    layerTips.close(ind_load);
+                    layerTips.msg(result.msg);
+                    if(result.code==1){
+                        window.top.location.href='/';
+                    }
+                    return false;
+                },complete:function(XMLHttpRequest){
+                    if(XMLHttpRequest.statusText=="timeout"){
+                        layerTips.close(ind_load);
+                        layerTips.msg("请求超时...");
+                    }
+                },error:function(){
+                    layerTips.close(ind_load);
+                    layerTips.msg("请求错误");
+                }
             });
-        }());
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
 
     });
 </script>

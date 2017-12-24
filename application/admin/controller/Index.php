@@ -14,7 +14,7 @@ class Index extends Common {
     }
 
     public function index() {
-        return $this->_fetch();
+        return $this->_fetch(["account"=>$this->account]);
     }
 
     public function main() {
@@ -28,7 +28,7 @@ class Index extends Common {
     public function login(Request $request){
         if($request->isPost()){
             $this->result=$this->login->login($this->params);
-            return $this->_result();
+            return $this->_jump();
         }else{
             return $this->_fetch();
         }
@@ -41,19 +41,6 @@ class Index extends Common {
     public function logout(){
         $this->result=$this->login->logout();
         return $this->_jump(Url::build("admin/Index/login"));
-    }
-
-    public function table(){
-        return $this->_fetch();
-    }
-
-    public function form(){
-        if($this->request->isPost()){
-            $this->result=[];
-            return $this->_result();
-        }else{
-            return $this->_fetch();
-        }
     }
 
     public function echarts(){

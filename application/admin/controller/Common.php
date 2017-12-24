@@ -27,6 +27,8 @@ class Common extends Controller{
     protected $request;
     //请求参数
     protected $params;
+    //当前登录用户信息
+    protected $account;
     //返回结果
     protected $result=[
         "code"=>1,
@@ -36,7 +38,7 @@ class Common extends Controller{
 
     protected $beforeActionList = [
         '_init',
-        '_menu'=>['except'=>'login,logout'],
+        '_auth'=>['except'=>'login,logout'],
         '_before'
     ];
 
@@ -53,8 +55,8 @@ class Common extends Controller{
      * 菜单
      * @return array
      */
-    protected function _menu(){
-
+    protected function _auth(){
+        Hook::listen("check_auth",$this->account);
     }
 
     /**
@@ -76,7 +78,7 @@ class Common extends Controller{
 
         unset($this->params,$this->request);
 
-        return $this->result;
+        return result_format($this->result);
     }
 
     /**
