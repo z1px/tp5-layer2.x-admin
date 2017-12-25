@@ -1,5 +1,5 @@
 .kit-doc {padding: 20px;}
 
 .mb60{margin-bottom:60px}
-.button_fixed{left: 0; position: fixed; bottom: 0; z-index: 100; width: 100%;}
+.button_fixed{left: 0; position: fixed; bottom: 0; z-index: 100; width: 100%;margin: 0;padding: 15px 0;background-color: white;}
 .button_fixed .layui-input-block{margin-left: 0; text-align: center;}

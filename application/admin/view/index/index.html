@@ -65,8 +65,8 @@
 
         <div class="layui-footer">
             <!-- 底部固定区域 -->
-            2017 &copy;
-            <a href="javascript:">kit.zhengjinfan.cn/</a> MIT license
+            <script>var date=new Date;document.write(date.getFullYear());</script></a> &copy;
+            <a href="javascript:"><script>document.write(window.location.host);</script></a> MIT license
 
         </div>
     </div>
@@ -131,7 +131,8 @@
                     area : ['520px','590px'],//宽高
                     content: "{:Url('admin/Account/myinfo')}",
                     resizing:function(layero){ //拉伸时修改高度
-                        layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height()-1)
+                        // 提交按钮在 iframe层 里面时，必须加这一句，要不然拉伸的时候会变形
+                        layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height());
                     }
                 });
             });

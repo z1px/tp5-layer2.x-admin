@@ -1,8 +1,6 @@
 /**
  * Name:onelevel.js
  * Author:Van
- * E-mail:zheng_jinfan@126.com
- * Website:http://kit.zhengjinfan.cn/
  * LICENSE:MIT
  */
 layui.define(['jquery', 'laytpl', 'element'], function(exports) {

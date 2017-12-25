@@ -1,8 +1,6 @@
 /**
  * Name:navbar.js
  * Author:Van
- * E-mail:zheng_jinfan@126.com
- * Website:http://kit.zhengjinfan.cn/
  * LICENSE:MIT
  */
 layui.define(['layer', 'laytpl', 'element'], function(exports) {

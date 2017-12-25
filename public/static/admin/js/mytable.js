@@ -303,14 +303,9 @@ layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
                             });
                             return false;
                         },
-                        full:function (layero) {
-                            layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height());
-                        },
-                        restore:function (layero) {
-                            layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height());
-                        },
                         resizing:function(layero){ //拉伸时修改高度
-                            layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height()-1);
+                            // 提交按钮在 iframe层 里面时，必须加这一句，要不然拉伸的时候会变形
+                            // layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height());
                         }
                     });
                     var device = layui.device();//获取设备信息
@@ -473,14 +468,9 @@ layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
                                 });
                                 return false;
                             },
-                            full:function (layero) {
-                                layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height());
-                            },
-                            restore:function (layero) {
-                                layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height());
-                            },
                             resizing:function(layero){ //拉伸时修改高度
-                                layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height()-1);
+                                // 提交按钮在 iframe层 里面时，必须加这一句，要不然拉伸的时候会变形
+                                // layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height());
                             }
                         });
                         var device = layui.device();//获取设备信息
