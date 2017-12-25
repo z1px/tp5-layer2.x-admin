@@ -15,6 +15,7 @@ use think\Request;
 use think\Response;
 use think\response\Redirect;
 use think\Url;
+use lib\Auth as AuthLib;
 
 class Auth {
 
@@ -52,6 +53,15 @@ class Auth {
         if($this->result["code"]!==1){
             self::redirect(Url::build("admin/Index/login"));
         }
+
+        $auth=new AuthLib();
+//        if(!$auth->check("{$request->module()}/{$request->controller()}/{$request->action()}",$this->result["data"]["id"])){
+//            $this->result["code"]=0;
+//            $this->result["msg"]="您所在的用户组没有该权限";
+//            $this->result["data"] = [];
+//            self::throwError();
+//        }
+
         $params = $this->result["data"];
     }
 }

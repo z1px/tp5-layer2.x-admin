@@ -68,5 +68,25 @@ return [
                 ]
             ]
         ],
+        [
+            "id" => "20300",
+            "title" => "权限管理",
+            "icon" => "fa-file-text",
+            "spread" => true,
+            "children" => [
+                [
+                    "id" => "20301",
+                    "title" => "用户组",
+                    "icon" => "fa-eraser",
+                    "url" => Url::build('admin/AuthGroup/table')
+                ],
+                [
+                    "id" => "20302",
+                    "title" => "权限规则",
+                    "icon" => "&#xe60e;",
+                    "url" => Url::build('admin/AuthRule/table')
+                ]
+            ]
+        ],
     ],
 ];

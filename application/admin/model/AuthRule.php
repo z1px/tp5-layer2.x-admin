@@ -1,24 +1,22 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Administrator
- * Date: 2017/7/12
- * Time: 14:55
+ * User: Kevin
+ * Date: 2017/12/25
+ * Time: 23:36
  */
 
 namespace app\admin\model;
 
 
-use think\Config;
 use think\Model;
-use think\Request;
 
-class Admin extends Model {
+class AuthRule extends Model {
 
     // 设置数据表（不含前缀）
-    protected $name = 'admin';
+    protected $name = 'auth_rule';
     // 设置当前模型对应的完整数据表名称
-//    protected $table = 'tp5_admin';
+//    protected $table = 'tp5_auth_rule';
     // 设置主键
     protected $pk = 'id';
     // 类型转换
@@ -37,7 +35,7 @@ class Admin extends Model {
     //自动完成包含新增操作
     protected $insert = [];
     //自动完成包含更新操作
-    protected $update = ["ip","area"];
+    protected $update = [];
 
     //返回结果
     protected $result=[
@@ -51,34 +49,6 @@ class Admin extends Model {
         1=>"正常",
         2=>"禁用",
     ];
-
-    /**
-     * 修改器
-     * @param $value
-     * @return int
-     * 修改器方法的命名规范：set + 属性名的驼峰命名+ Attr
-     */
-    protected function setPasswordAttr($value){
-        if(empty($value)) return null;
-        return auth_code($value,"ENCODE",Config::get('login_key'));
-    }
-
-    /**
-     * 修改器
-     * @param $value
-     * @return int
-     * 修改器方法的命名规范：set + 属性名的驼峰命名+ Attr
-     */
-    protected function setIpAttr($value){
-        if(!empty($value)) return $value;
-        return Request::instance()->ip();
-    }
-
-    protected function setAreaAttr($value){
-        if(!empty($value)) return $value;
-        $ip=Request::instance()->ip();
-        return get_ip_area($ip);
-    }
 
     protected function getStatusNameAttr($value,$data) {
         if(!isset($data["status"])) return "未知状态";
