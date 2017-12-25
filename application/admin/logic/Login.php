@@ -93,6 +93,7 @@ class Login {
         //登录日志
         $loginLog = new LoginLog();
         $loginLog->admin_id=$data->id;
+        $loginLog->username=$data->username;
         $loginLog->account=json_encode($data->visible(['id','username','true_name','mobile','email'])->toArray());
         $loginLog->save();
 

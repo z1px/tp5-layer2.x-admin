@@ -9,18 +9,16 @@
 namespace app\admin\controller;
 
 
-use app\admin\logic\Login;
 use app\admin\service\Admin;
-use http\Env\Url;
+use app\admin\service\BehaviorLog;
+use app\admin\service\LoginLog;
 
 class Account extends Common {
 
     protected $admin;
-    protected $login;
 
     protected function _before(){
         $this->admin=new Admin();
-        $this->login=new Login();
     }
 
     /**
@@ -86,6 +84,14 @@ class Account extends Common {
     }
 
     /**
+     * 修改管理员账号状态
+     */
+    public function editStatus(){
+        $this->result=$this->admin->editStatus($this->params);
+        return $this->_result();
+    }
+
+    /**
      * 删除管理员
      */
     public function del(){
@@ -97,6 +103,38 @@ class Account extends Common {
 
         $this->result=$this->admin->del($this->params["id"]);
         return $this->_result();
+    }
+
+    /**
+     * 登录日志
+     * @return mixed
+     */
+    public function loginLog(){
+
+        if($this->request->isPost()){
+            $loginLog = new LoginLog();
+            $this->result=$loginLog->getList($this->params);
+            unset($loginLog);
+            return $this->_result();
+        }else{
+            return $this->_fetch(["list_admin"=>$this->admin->getAll()]);
+        }
+    }
+
+    /**
+     * 行为日志
+     * @return mixed
+     */
+    public function behaviorLog(){
+
+        if($this->request->isPost()){
+            $behaviorLog = new BehaviorLog();
+            $this->result=$behaviorLog->getList($this->params);
+            unset($behaviorLog);
+            return $this->_result();
+        }else{
+            return $this->_fetch(["list_admin"=>$this->admin->getAll()]);
+        }
     }
 
 }

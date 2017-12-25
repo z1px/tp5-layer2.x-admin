@@ -1,4 +1,4 @@
-layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
+layui.define(['table','form','laytpl','laydate','layer','code'], function(exports) {
     var table = layui.table,
         form = layui.form,
         laytpl = layui.laytpl,
@@ -34,6 +34,10 @@ layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
                 // even: true, //开启隔行背景
                 // size: 'sm', //小尺寸的表格
                 cols: [],
+                initSort: { //初始排序
+                    field: 'id', //排序字段，对应 cols 设定的各字段名
+                    type: 'desc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
+                },
                 done: function(res, curr, count) { // 数据渲染完的回调。你可以借此做一些其它的操作
                     //如果是异步请求数据方式，res即为你接口返回的信息。
                     //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
@@ -177,182 +181,301 @@ layui.define(['table','form','laytpl','laydate','layer'], function(exports) {
                 var data = obj.data; //获得当前行数据
                 var layEvent = obj.event; //获得 lay-event 对应的值
                 var tr = obj.tr; //获得当前行 tr 的DOM对象
+                var that = $(this);
 
-                if (layEvent === 'view') { //查看
-                    // console.log(table.checkStatus(_config.table.filter));
-                    console.log(data);
-                    //do somehing
-                } else if (layEvent === 'del') { //删除
-                    layerTips.confirm('真的删除'+(data.id?"ID为 "+data.id+" 的数据":"该行")+'吗', function(index) {
-                        //向服务端发送删除指令
-                        $.post(_config.table.url_del,{id:data.id},function (result) {
-                            if(result.code==1){
-                                obj.del(); //删除对应行（tr）的DOM结构
-                                layerTips.close(index);
-                            }
-                            layerTips.msg(result.msg);
-                        },"json");
-                    });
-                } else if (layEvent === 'edit') { //编辑
-                    if(_config.open.type === 1){
-                        var ind_load=layerTips.load(2);
-                        $.ajax({
-                            type:"get",
-                            url:_config.open.edit.url,
-                            data:{id:data.id},
-                            timeout : 5000, //超时时间设置，单位毫秒
-                            dataType:"json",
-                            async: false, // 同步加载
-                            beforeSend:function(){
-
-                            },success:function(result){
-                                layerTips.close(ind_load);
-                                if(result.code==1){
-                                    _config.open.edit.content = laytpl($(_config.open.edit.tpl).html()).render(result);
-                                }else{
-                                    layerTips.msg(result.msg,{time: 2000});
-                                    return false;
-                                }
-                            },complete:function(XMLHttpRequest){
-                                if(XMLHttpRequest.statusText=="timeout"){
-                                    layerTips.close(ind_load);
-                                    layerTips.msg("请求超时...");
-                                }
-                            },error:function(){
-                                layerTips.close(ind_load);
-                                layerTips.msg("请求错误");
-                            }
-                        });
-                    }else if(_config.open.type ===2){
-                        _config.open.edit.content = _config.open.edit.url+"?id="+data.id;
-                    }else {
-                        _config.open.edit.content = "";
-                    }
-                    var top_index = layerTips.open({
-                        type: _config.open.type,//0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
-                        title: _config.open.edit.title,
-                        maxmin: _config.open.maxmin, //最大最小化
-                        shade: _config.open.shade, //遮罩
-                        id : _config.open.id, //用于控制弹层唯一标识
-                        area : _config.open.area,//宽高
-                        btnAlign: _config.open.btnAlign, // 按钮排列
-                        btn: _config.open.edit.btn,
-                        content: _config.open.edit.content,
-                        yes: function(index, layero) {
-                            if(_config.open.type ===2){
-                                var body = layerTips.getChildFrame('body', index);
-                                // var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-                                // console.log(body.html()); //得到iframe页的body内容
-                                var form_field = body.find('form[lay-filter='+_config.open.edit.filter+']').serializeArray();
-                                var field={};
-                                if(form_field){
-                                    $.each(form_field,function (i,v){
-                                        field[v.name]=v.value;
-                                    })
-                                }
-                                var ind_load=layerTips.load(2);
-                                $.ajax({
-                                    type:"post",
-                                    url:_config.open.edit.url,
-                                    data:field,
-                                    timeout : 5000, //超时时间设置，单位毫秒
-                                    dataType:"json",
-                                    async: true, // 异步加载
-                                    beforeSend:function(){
-
-                                    },success:function(result){
-                                        layerTips.close(ind_load);
-                                        layerTips.msg(result.msg,{time: 2000});
-                                        if(result.code==1){
-                                            top_index && layerTips.close(top_index); //关闭弹出层
-                                            //同步更新缓存对应的值
-                                            obj.update(field);
-                                        }
-                                    },complete:function(XMLHttpRequest){
-                                        if(XMLHttpRequest.statusText=="timeout"){
-                                            layerTips.close(ind_load);
-                                            layerTips.msg("请求超时...");
-                                        }
-                                    },error:function(){
-                                        layerTips.close(ind_load);
-                                        layerTips.msg("请求错误");
-                                    }
+                switch(layEvent){
+                    case 'view': //查看
+                        // console.log(table.checkStatus(_config.table.filter));
+                        // console.log(data);
+                        //do somehing
+                        break;
+                    case 'view_arr': //查看数组
+                        layerTips.open({
+                            type: 1,
+                            shadeClose: true,//点击遮罩关闭
+                            title: false, //不显示标题
+                            id: "demo", //用于控制弹层唯一标识
+                            area: "auto",
+                            content: '<pre class="layui-code">'+data[that.data("field")]+'</pre>',
+                            success: function() {
+                                layui.code({ // 加载code模块
+                                    // elem: 'pre',//默认值为.layui-code
+                                    // title: 'array', // 设置标题
+                                    // height: '100px', //请注意必须加px。如果该key不设定，则会自适应高度，且不会出现滚动条。
+                                    // encode: false, //是否转义html标签。默认不开启
+                                    // skin: 'notepad', //如果要默认风格，不用设定该key。
+                                    // about: false, //剔除关于
                                 });
-                            }else{
-                                $('form[lay-filter='+_config.open.edit.filter+']').find('button[lay-submit]').click();
-                            }
-                            // layerTips.close(index);
-                            return false;
-                        },
-                        btn2: function(index, layero) {
-                            if(_config.open.type ===2){
-                                var body = layerTips.getChildFrame('body', index);
-                                body.find('form[lay-filter='+_config.open.edit.filter+']').find('button[type="reset"]').click();
-                            }else{
-                                $('form[lay-filter='+_config.open.edit.filter+']').find('button[type="reset"]').click();
-                            }
-                            return false;
-                        },
-                        success: function() {
-                            form.render(null,_config.open.edit.filter);
-                        },
-                        cancel:function (index, layero) {
-                            layerTips.confirm('若数据未保存，关闭后数据会丢失，确定要关闭吗？',function(ind){
-                                layerTips.close(ind);
-                                layerTips.close(index);
-                            });
-                            return false;
-                        },
-                        resizing:function(layero){ //拉伸时修改高度
-                            // 提交按钮在 iframe层 里面时，必须加这一句，要不然拉伸的时候会变形
-                            // layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height());
-                        }
-                    });
-                    var device = layui.device();//获取设备信息
-                    // 如果是手机浏览器，则最大化
-                    if(device.android||device.ios||device.weixin) layerTips.full(top_index);//弹出即最大化
-
-                    // 监听表单提交
-                    form.on('submit('+_config.open.edit.submit+')', function(data){
-                        // console.log(data.elem); //被执行事件的元素DOM对象，一般为button对象
-                        // console.log(data.form); //被执行提交的form对象，一般在存在form标签时才会返回
-                        // console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
-                        var ind_load=layerTips.load(2);
-                        $.ajax({
-                            type:"post",
-                            url:_config.open.edit.url,
-                            data:data.field,
-                            timeout : 5000, //超时时间设置，单位毫秒
-                            dataType:"json",
-                            async: true, // 异步加载
-                            beforeSend:function(){
-
-                            },success:function(result){
-                                layerTips.close(ind_load);
-                                layerTips.msg(result.msg,{time: 2000});
-                                if(result.code==1){
-                                    top_index && layerTips.close(top_index); //关闭弹出层
-                                    //同步更新缓存对应的值
-                                    obj.update(data.field);
-                                }
-                            },complete:function(XMLHttpRequest){
-                                if(XMLHttpRequest.statusText=="timeout"){
-                                    layerTips.close(ind_load);
-                                    layerTips.msg("请求超时...");
-                                }
-                            },error:function(){
-                                layerTips.close(ind_load);
-                                layerTips.msg("请求错误");
                             }
                         });
+                        break;
+                    case 'del': //删除
+                        layerTips.confirm('真的删除'+(data.id?"ID为 "+data.id+" 的数据":"该行")+'吗', function(index) {
+                            //向服务端发送删除指令
+                            $.post(_config.table.url_del,{id:data.id},function (result) {
+                                if(result.code==1){
+                                    obj.del(); //删除对应行（tr）的DOM结构
+                                    layerTips.close(index);
+                                }
+                                layerTips.msg(result.msg);
+                            },"json");
+                        });
+                        break;
+                    case 'edit': //编辑
+                        if(_config.open.type === 1){
+                            var ind_load=layerTips.load(2);
+                            $.ajax({
+                                type:"get",
+                                url:_config.open.edit.url,
+                                data:{id:data.id},
+                                timeout : 5000, //超时时间设置，单位毫秒
+                                dataType:"json",
+                                async: false, // 同步加载
+                                beforeSend:function(){
 
-                        return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-                    });
+                                },success:function(result){
+                                    layerTips.close(ind_load);
+                                    if(result.code==1){
+                                        _config.open.edit.content = laytpl($(_config.open.edit.tpl).html()).render(result);
+                                    }else{
+                                        layerTips.msg(result.msg,{time: 2000});
+                                        return false;
+                                    }
+                                },complete:function(XMLHttpRequest){
+                                    if(XMLHttpRequest.statusText=="timeout"){
+                                        layerTips.close(ind_load);
+                                        layerTips.msg("请求超时...");
+                                    }
+                                },error:function(){
+                                    layerTips.close(ind_load);
+                                    layerTips.msg("请求错误");
+                                }
+                            });
+                        }else if(_config.open.type ===2){
+                            _config.open.edit.content = _config.open.edit.url+"?id="+data.id;
+                        }else {
+                            _config.open.edit.content = "";
+                        }
+                        var top_index = layerTips.open({
+                            type: _config.open.type,//0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+                            title: _config.open.edit.title,
+                            maxmin: _config.open.maxmin, //最大最小化
+                            shade: _config.open.shade, //遮罩
+                            id : _config.open.id, //用于控制弹层唯一标识
+                            area : _config.open.area,//宽高
+                            btnAlign: _config.open.btnAlign, // 按钮排列
+                            btn: _config.open.edit.btn,
+                            content: _config.open.edit.content,
+                            yes: function(index, layero) {
+                                if(_config.open.type ===2){
+                                    var body = layerTips.getChildFrame('body', index);
+                                    // var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                                    // console.log(body.html()); //得到iframe页的body内容
+                                    var form_field = body.find('form[lay-filter='+_config.open.edit.filter+']').serializeArray();
+                                    var field={};
+                                    if(form_field){
+                                        $.each(form_field,function (i,v){
+                                            field[v.name]=v.value;
+                                        })
+                                    }
+                                    var ind_load=layerTips.load(2);
+                                    $.ajax({
+                                        type:"post",
+                                        url:_config.open.edit.url,
+                                        data:field,
+                                        timeout : 5000, //超时时间设置，单位毫秒
+                                        dataType:"json",
+                                        async: true, // 异步加载
+                                        beforeSend:function(){
+
+                                        },success:function(result){
+                                            layerTips.close(ind_load);
+                                            layerTips.msg(result.msg,{time: 2000});
+                                            if(result.code==1){
+                                                top_index && layerTips.close(top_index); //关闭弹出层
+                                                //同步更新缓存对应的值
+                                                obj.update(field);
+                                            }
+                                        },complete:function(XMLHttpRequest){
+                                            if(XMLHttpRequest.statusText=="timeout"){
+                                                layerTips.close(ind_load);
+                                                layerTips.msg("请求超时...");
+                                            }
+                                        },error:function(){
+                                            layerTips.close(ind_load);
+                                            layerTips.msg("请求错误");
+                                        }
+                                    });
+                                }else{
+                                    $('form[lay-filter='+_config.open.edit.filter+']').find('button[lay-submit]').click();
+                                }
+                                // layerTips.close(index);
+                                return false;
+                            },
+                            btn2: function(index, layero) {
+                                if(_config.open.type ===2){
+                                    var body = layerTips.getChildFrame('body', index);
+                                    body.find('form[lay-filter='+_config.open.edit.filter+']').find('button[type="reset"]').click();
+                                }else{
+                                    $('form[lay-filter='+_config.open.edit.filter+']').find('button[type="reset"]').click();
+                                }
+                                return false;
+                            },
+                            success: function() {
+                                form.render(null,_config.open.edit.filter);
+                            },
+                            cancel:function (index, layero) {
+                                layerTips.confirm('若数据未保存，关闭后数据会丢失，确定要关闭吗？',function(ind){
+                                    layerTips.close(ind);
+                                    layerTips.close(index);
+                                });
+                                return false;
+                            },
+                            resizing:function(layero){ //拉伸时修改高度
+                                // 提交按钮在 iframe层 里面时，必须加这一句，要不然拉伸的时候会变形
+                                // layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height());
+                            }
+                        });
+                        var device = layui.device();//获取设备信息
+                        // 如果是手机浏览器，则最大化
+                        if(device.android||device.ios||device.weixin) layerTips.full(top_index);//弹出即最大化
+
+                        // 监听表单提交
+                        form.on('submit('+_config.open.edit.submit+')', function(data){
+                            // console.log(data.elem); //被执行事件的元素DOM对象，一般为button对象
+                            // console.log(data.form); //被执行提交的form对象，一般在存在form标签时才会返回
+                            // console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+                            var ind_load=layerTips.load(2);
+                            $.ajax({
+                                type:"post",
+                                url:_config.open.edit.url,
+                                data:data.field,
+                                timeout : 5000, //超时时间设置，单位毫秒
+                                dataType:"json",
+                                async: true, // 异步加载
+                                beforeSend:function(){
+
+                                },success:function(result){
+                                    layerTips.close(ind_load);
+                                    layerTips.msg(result.msg,{time: 2000});
+                                    if(result.code==1){
+                                        top_index && layerTips.close(top_index); //关闭弹出层
+                                        //同步更新缓存对应的值
+                                        obj.update(data.field);
+                                    }
+                                },complete:function(XMLHttpRequest){
+                                    if(XMLHttpRequest.statusText=="timeout"){
+                                        layerTips.close(ind_load);
+                                        layerTips.msg("请求超时...");
+                                    }
+                                },error:function(){
+                                    layerTips.close(ind_load);
+                                    layerTips.msg("请求错误");
+                                }
+                            });
+
+                            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                        });
+                        break;
                 }
             });
+
+            // 监听排序切换
+            table.on('sort('+_config.table.filter+')', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                // console.log(obj.field); //当前排序的字段名
+                // console.log(obj.type); //当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
+                // console.log(this); //当前排序的 th 对象
+
+                //尽管我们的 table 自带排序功能，但并没有请求服务端。
+                //有些时候，你可能需要根据当前排序的字段，重新向服务端发送请求，从而实现服务端排序，如：
+
+                //重加载
+                tableIns.reload({
+                    initSort: obj, //记录初始排序，如果不设的话，将无法标记表头的排序状态。 layui 2.1.1 新增参数
+                    where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                        field: obj.field, //排序字段
+                        order: obj.type //排序方式
+                    }
+                });
+            });
+
+            // 监听单元格编辑
+            table.on('edit('+_config.table.filter+')', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+                // console.log(obj.value); //得到修改后的值
+                // console.log(obj.field); //当前编辑的字段名
+                // console.log(obj.data); //所在行的所有相关数据
+
+                var ind_load=layerTips.load(2);
+                $.ajax({
+                    type:"post",
+                    url:_config.open.edit.url,
+                    data:obj.data,
+                    timeout : 5000, //超时时间设置，单位毫秒
+                    dataType:"json",
+                    async: true, // 异步加载
+                    beforeSend:function(){
+
+                    },success:function(result){
+                        layerTips.close(ind_load);
+                        layerTips.msg(result.msg,{time: 2000});
+                        if(result.code!=1){
+                            tableIns.reload(); // 如果修改失败则刷新列表
+                        }
+                    },complete:function(XMLHttpRequest){
+                        if(XMLHttpRequest.statusText=="timeout"){
+                            layerTips.close(ind_load);
+                            layerTips.msg("请求超时...");
+                        }
+                    },error:function(){
+                        layerTips.close(ind_load);
+                        layerTips.msg("请求错误");
+                    }
+                });
+
+            });
+
+            // 搜索
             form.render(null, 'kit-search-form');
             $('#kit-search-more').on('click', function() {
                 $('.kit-search-mored').toggle();
+            });
+
+            // 监听开关状态切换
+            form.on('switch(switch_status)', function(data){
+                // console.log(data.elem); //得到checkbox原始DOM对象
+                // console.log(data.elem.checked); //开关是否开启，true或者false
+                // console.log(data.value); //开关value值，也可以通过data.elem.value得到
+                // console.log(data.othis); //得到美化后的DOM对象
+                var id = $(this).data("id");
+                var status = data.elem.checked ? 1:2;
+
+                var ind_load=layerTips.load(2);
+                $.ajax({
+                    type:"post",
+                    url:_config.table.url_switch,
+                    data:{id:id,status:status},
+                    timeout : 5000, //超时时间设置，单位毫秒
+                    dataType:"json",
+                    async: true, // 异步加载
+                    beforeSend:function(){
+
+                    },success:function(result){
+                        layerTips.close(ind_load);
+                        layerTips.msg(result.msg,{time: 2000});
+                        if(result.code!=1){
+                            tableIns.reload(); // 如果修改失败则刷新列表
+                        }
+                    },complete:function(XMLHttpRequest){
+                        if(XMLHttpRequest.statusText=="timeout"){
+                            layerTips.close(ind_load);
+                            layerTips.msg("请求超时...");
+                        }
+                    },error:function(){
+                        layerTips.close(ind_load);
+                        layerTips.msg("请求错误");
+                    }
+                });
+
             });
 
             $('.kit-search-btns').children('a').off('click').on('click', function() {

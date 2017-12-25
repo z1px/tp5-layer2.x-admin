@@ -38,6 +38,18 @@ return [
                     "title" => "管理员列表",
                     "icon" => "&#xe6c6;",
                     "url" => Url::build('admin/Account/table')
+                ],
+                [
+                    "id" => "203",
+                    "title" => "登录日志",
+                    "icon" => "&#xe6c6;",
+                    "url" => Url::build('admin/Account/loginLog')
+                ],
+                [
+                    "id" => "204",
+                    "title" => "行为日志",
+                    "icon" => "&#xe6c6;",
+                    "url" => Url::build('admin/Account/behaviorLog')
                 ]
             ]
         ],

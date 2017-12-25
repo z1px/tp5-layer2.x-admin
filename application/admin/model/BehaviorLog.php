@@ -3,21 +3,22 @@
  * Created by PhpStorm.
  * User: Administrator
  * Date: 2017/7/12
- * Time: 14:55
+ * Time: 16:21
  */
 
 namespace app\admin\model;
 
 
+use think\Cookie;
 use think\Model;
 use think\Request;
 
-class LoginLog extends Model {
+class BehaviorLog extends Model {
 
     // 设置数据表（不含前缀）
-//    protected $name = 'login_log';
+//    protected $name = 'behavior_log';
     // 设置当前模型对应的完整数据表名称
-    protected $table = 'tp5_login_log';
+    protected $table = 'tp5_behavior_log';
     // 设置主键
     protected $pk = 'id';
     // 类型转换
@@ -34,7 +35,7 @@ class LoginLog extends Model {
     //自动完成包含新增和更新操作
     protected $auto = [];
     //自动完成包含新增操作
-    protected $insert = ["ip","area"];
+    protected $insert = ["ip","area","admin_id"];
     //自动完成包含更新操作
     protected $update = [];
 
@@ -60,6 +61,11 @@ class LoginLog extends Model {
         if(!empty($value)) return $value;
         $ip=Request::instance()->ip();
         return get_ip_area($ip);
+    }
+
+    protected function setAdminIdAttr($value){
+        if(!empty($value)) return $value;
+        return Cookie::get("login_id");
     }
 
 }

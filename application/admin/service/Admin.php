@@ -12,7 +12,6 @@ namespace app\admin\service;
 use \app\admin\model\Admin as AdminModel;
 use think\Cookie;
 use think\Loader;
-use think\Url;
 
 class Admin extends AdminModel {
 
@@ -214,10 +213,10 @@ class Admin extends AdminModel {
         }elseif(!empty($row["begin_time"])&&!empty($row["end_time"])){
             $where["create_time"]=["between",[strtotime($row["begin_time"]." 00:00:00"),strtotime($row["end_time"]." 23:59:59")]];
         }
-        if(isset($row["sort"])){
-            if(!empty($row["sort"])){
-                if($row["sort"]=="status_name") $row["sort"]="status";
-                $order="{$row["sort"]} {$row["order"]}";
+        if(isset($row["field"])){
+            if(!empty($row["field"])){
+                if($row["field"]=="status_name") $row["field"]="status";
+                $order="{$row["field"]} {$row["order"]}";
             }
         }
         $list=$this->field("id,username,true_name,mobile,email,status,create_time,last_login_time,ip,area")->where($where)->page($row["page"],$row["limit"])->order($order)->select();
