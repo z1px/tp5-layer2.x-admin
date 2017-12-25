@@ -77,8 +77,13 @@ class Common extends Controller{
 
         Config::set('default_return_type','json');
 
-        unset($this->params,$this->request);
         $this->result = result_format($this->result);
+
+        // 行为日志
+        Hook::listen('behavior_log',$params,["request"=>$this->request,"account"=>$this->account,"params"=>$this->params,"result"=>$this->result]);
+
+        unset($this->params,$this->request);
+
         return $this->result;
     }
 
@@ -90,6 +95,9 @@ class Common extends Controller{
     protected function _fetch($fetch=[]) {
 
         Config::set('default_return_type','html');
+
+        // 行为日志
+        Hook::listen('behavior_log',$params,["request"=>$this->request,"account"=>$this->account,"params"=>$this->params,"result"=>$this->result]);
 
         unset($this->params,$this->request,$this->result);
 
@@ -104,6 +112,9 @@ class Common extends Controller{
     protected function _jump($url=null) {
 
         Config::set('default_return_type','html');
+
+        // 行为日志
+        Hook::listen('behavior_log',$params,["request"=>$this->request,"account"=>$this->account,"params"=>$this->params,"result"=>$this->result]);
 
         unset($this->params,$this->request);
 

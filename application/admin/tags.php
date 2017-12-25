@@ -24,7 +24,8 @@ return [
     // 日志写入
     'log_write'    => [],
     // 应用结束
-    'app_end'      => ["app\\admin\\behavior\\BehaviorLog"],
+    'app_end'      => [],
     // 自定义行为
     'check_auth'  => ["app\\admin\\behavior\\Auth"],
+    'behavior_log'  => ["app\\admin\\behavior\\BehaviorLog"],
 ];

@@ -9,58 +9,61 @@
 namespace app\admin\behavior;
 
 
-use app\admin\controller\Common;
 use app\admin\model\BehaviorLog as BehaviorLogModel;
 use think\Config;
 use think\Cookie;
 use think\Request;
 
-class BehaviorLog extends Common {
+class BehaviorLog {
 
     public function run(&$params,$extra=[]){
 
-        if(empty($this->request)) $this->request=Request::instance();
+        if(empty($extra)) return ;
+        if(!isset($extra["request"]) || empty($extra["request"])) $extra["request"]=Request::instance();
+        if(!isset($extra["account"])) $extra["account"]=[];
+        if(!isset($extra["params"])) $extra["params"]=[];
+        if(!isset($extra["result"])) $extra["result"]=[];
 
-        if(!$this->request->isPost() && !$this->request->isAjax()) return ;
+        if(!$extra["request"]->isPost() && !$extra["request"]->isAjax()) return ;
 
         $allow_action=["add","edit","del","myinfo","editstatus"];
-        if(!in_array(strtolower($this->request->action()),$allow_action)) return ;
+        if(!in_array(strtolower($extra["request"]->action()),$allow_action)) return ;
 
         $row=[
-            "title"=>isset(Config::get("behavior_title")[strtolower($this->request->module())][strtolower($this->request->controller())][strtolower($this->request->action())])?Config::get("behavior_title")[strtolower($this->request->module())][strtolower($this->request->controller())][strtolower($this->request->action())]:"",
-            "module"=>$this->request->module(),
-            "controller"=>$this->request->controller(),
-            "action"=>$this->request->action(),
-            "url"=>$this->request->url(true),
+            "title"=>isset(Config::get("behavior_title")[strtolower($extra["request"]->module())][strtolower($extra["request"]->controller())][strtolower($extra["request"]->action())])?Config::get("behavior_title")[strtolower($extra["request"]->module())][strtolower($extra["request"]->controller())][strtolower($extra["request"]->action())]:"",
+            "module"=>$extra["request"]->module(),
+            "controller"=>$extra["request"]->controller(),
+            "action"=>$extra["request"]->action(),
+            "url"=>$extra["request"]->url(true),
             "type"=>"",
-            "request"=>empty($this->params)?"":json_encode($this->params),
-            "response"=>empty($this->result)?"":json_encode($this->result),
-            "admin_id"=>isset($this->account["id"])?Cookie::get("login_id"):$this->account["id"],
-            "username"=>isset($this->account["username"])?Cookie::get("login_name"):$this->account["username"]
+            "request"=>empty($extra["params"])?"":json_encode($extra["params"]),
+            "response"=>empty($extra["result"])?"":json_encode($extra["result"]),
+            "admin_id"=>isset($extra["account"]["id"])?Cookie::get("login_id"):$extra["account"]["id"],
+            "username"=>isset($extra["account"]["username"])?Cookie::get("login_name"):$extra["account"]["username"]
         ];
-        if($this->request->isGet()){
+        if($extra["request"]->isGet()){
             $row["type"][]="get";
-        }elseif($this->request->isPost()){
+        }elseif($extra["request"]->isPost()){
             $row["type"][]="post";
-        }elseif($this->request->isPut()){
+        }elseif($extra["request"]->isPut()){
             $row["type"][]="put";
-        }elseif($this->request->isDelete()){
+        }elseif($extra["request"]->isDelete()){
             $row["type"][]="delete";
-        }elseif($this->request->isAjax()){
+        }elseif($extra["request"]->isAjax()){
             $row["type"][]="ajax";
-        }elseif($this->request->isPjax()){
+        }elseif($extra["request"]->isPjax()){
             $row["type"][]="pjax";
-        }elseif($this->request->isMobile()){
+        }elseif($extra["request"]->isMobile()){
             $row["type"][]="mobile";
-        }elseif($this->request->isHead()){
+        }elseif($extra["request"]->isHead()){
             $row["type"][]="head";
-        }elseif($this->request->isPatch()){
+        }elseif($extra["request"]->isPatch()){
             $row["type"][]="patch";
-        }elseif($this->request->isOptions()){
+        }elseif($extra["request"]->isOptions()){
             $row["type"][]="options";
-        }elseif($this->request->isCli()){
+        }elseif($extra["request"]->isCli()){
             $row["type"][]="cli";
-        }elseif($this->request->isCgi()){
+        }elseif($extra["request"]->isCgi()){
             $row["type"][]="cgi";
         }
         $row["type"]=implode("|",$row["type"]);

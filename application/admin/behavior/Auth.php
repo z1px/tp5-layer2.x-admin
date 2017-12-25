@@ -31,7 +31,8 @@ class Auth {
     // 重定向
     protected function redirect($url, $code=302){
         $response = new Redirect($url);
-        throw new HttpResponseException($response->code($code));
+        $response->code($code);
+        throw new HttpResponseException($response);
     }
 
 

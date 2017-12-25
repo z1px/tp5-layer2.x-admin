@@ -124,7 +124,7 @@
                     </form>
                 </div>
                 <footer>
-                    <p>KIT ADMIN © <a href="javascript:void(0);" style="color:white; font-size:18px;" target="_blank">www.xxx.cn</a></p>
+                    <p>KIT ADMIN © <a href="javascript:void(0);" style="color:white; font-size:18px;" target="_blank"><script>document.write(window.location.host);</script></a></p>
                 </footer>
             </div>
         </div>
@@ -160,6 +160,9 @@
                     layerTips.msg(result.msg);
                     if(result.code==1){
                         window.top.location.href='/';
+                    }else{
+                        $("img.captcha").attr("src",'{:captcha_src()}?time='+Math.random()+'');
+                        $("input[name=captcha]").val("").focus();
                     }
                     return false;
                 },complete:function(XMLHttpRequest){
