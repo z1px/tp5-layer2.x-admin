@@ -10,11 +10,11 @@
 return [
     [
         "title"=>"基本菜单",
-        "icon"=>"fa-circle-o",
+        "icon"=>"fa-ellipsis-h",
         "id"=>"1"
     ], [
         "title"=>"系统设置",
-        "icon"=>"&#xe658;",
+        "icon"=>"fa-cog",
         "id"=>"2"
     ]
 ];

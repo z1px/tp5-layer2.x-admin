@@ -9,18 +9,25 @@
 // 左侧菜单
 use think\Url;
 
+/**
+ * ID命名规则说明
+ * ID分为五位数
+ * 第一位表示一级菜单ID
+ * 第二和第三位表示二级菜单ID
+ * 第四和第五位表示三级菜单ID
+ */
 return [
     1=>[
         [
-            "id" => "101",
+            "id" => "10100",
             "title" => "表格与表单",
-            "icon" => "fa-cubes",
+            "icon" => "fa-ellipsis-v",
             "spread" => true,
             "children" => [
                [
-                    "id" => "104",
+                    "id" => "10101",
                     "title" => "报表",
-                    "icon" => "&#xe63c;",
+                    "icon" => "fa-bar-chart",
                     "url" =>  Url::build('admin/Index/echarts')
                 ],
             ]
@@ -28,27 +35,35 @@ return [
     ],
     2=>[
         [
-            "id" => "201",
-            "title" => "管理员",
-            "icon" => "fa-cubes",
+            "id" => "20100",
+            "title" => "管理员管理",
+            "icon" => "fa-user",
             "spread" => true,
             "children" => [
                 [
-                    "id" => "202",
+                    "id" => "20101",
                     "title" => "管理员列表",
-                    "icon" => "&#xe6c6;",
+                    "icon" => "fa-users",
                     "url" => Url::build('admin/Account/table')
-                ],
+                ]
+            ]
+        ],
+        [
+            "id" => "20200",
+            "title" => "日志管理",
+            "icon" => "fa-file-text",
+            "spread" => true,
+            "children" => [
                 [
-                    "id" => "203",
+                    "id" => "20201",
                     "title" => "登录日志",
-                    "icon" => "&#xe6c6;",
+                    "icon" => "fa-eraser",
                     "url" => Url::build('admin/Account/loginLog')
                 ],
                 [
-                    "id" => "204",
+                    "id" => "20202",
                     "title" => "行为日志",
-                    "icon" => "&#xe6c6;",
+                    "icon" => "&#xe60e;",
                     "url" => Url::build('admin/Account/behaviorLog')
                 ]
             ]
