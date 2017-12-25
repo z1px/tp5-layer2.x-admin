@@ -37,7 +37,7 @@ function result_format($data){
                 $data[$key]=result_format($value);
             }else{
                 $value=trim($value);
-                if(empty($value)){
+                if(is_null($value)){
                     $data[$key]="";
                 }else{
                     $data[$key]=$value;

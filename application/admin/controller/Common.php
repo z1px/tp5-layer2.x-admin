@@ -30,11 +30,7 @@ class Common extends Controller{
     //当前登录用户信息
     protected $account;
     //返回结果
-    protected $result=[
-        "code"=>1,
-        "msg"=>"data normal",
-        "data"=>[],
-    ];
+    protected $result;
 
     protected $beforeActionList = [
         '_init',
@@ -47,6 +43,11 @@ class Common extends Controller{
      * @return array
      */
     protected function _init(){
+        $this->result=[
+            "code"=>1,
+            "msg"=>"data normal",
+            "data"=>[],
+        ];
         $this->request = Request::instance();
         $this->params = $this->request->param();
     }
@@ -77,8 +78,8 @@ class Common extends Controller{
         Config::set('default_return_type','json');
 
         unset($this->params,$this->request);
-
-        return result_format($this->result);
+        $this->result = result_format($this->result);
+        return $this->result;
     }
 
     /**

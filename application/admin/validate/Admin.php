@@ -25,7 +25,7 @@ class Admin extends Validate {
 
     // 错误提示
     protected $message = [
-
+        "mobile.regex"=>"手机号格式错误"
     ];
 
     // 验证场景
