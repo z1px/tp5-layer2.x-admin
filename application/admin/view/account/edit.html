@@ -43,6 +43,14 @@
             {/volist}
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户组</label>
+        <div class="layui-input-block">
+            {volist name="list_group" id="vo"}
+            <input type="radio" name="group_id" value="{$vo.id}" title="{$vo.title}" {$vo.checked} {$vo.disabled}>
+            {/volist}
+        </div>
+    </div>
     <div class="layui-form-item  button_fixed" style="display: none">
         <div class="layui-input-block">
             <input type="hidden" name="id" value="{$data.id}" />
@@ -60,7 +68,7 @@
         var myform = layui.myform;
 
         myform.set({
-            'url':"{:Url('admin/Account/edit')}",
+            'url':"{:Url('admin/Account/edit')}"
         }).init();
     })
 

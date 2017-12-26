@@ -44,6 +44,11 @@ class AuthRule extends Model {
         "data"=>[],
     ];
 
+    //类型
+    public $list_type=[
+        1=>"定义规则表达式",
+    ];
+
     //状态
     public $list_status=[
         1=>"正常",
@@ -53,6 +58,11 @@ class AuthRule extends Model {
     protected function getStatusNameAttr($value,$data) {
         if(!isset($data["status"])) return "未知状态";
         return isset($this->list_status[$data["status"]])?$this->list_status[$data["status"]]:"未知状态";
+    }
+
+    protected function getTypeNameAttr($value,$data) {
+        if(!isset($data["type"])) return "未知类型";
+        return isset($this->list_type[$data["type"]])?$this->list_type[$data["type"]]:"未知类型";
     }
 
 }

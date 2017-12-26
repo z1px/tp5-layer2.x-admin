@@ -47,7 +47,7 @@ class AuthGroup extends Model {
     //状态
     public $list_status=[
         1=>"正常",
-        0=>"禁用",
+        2=>"禁用",
     ];
 
     protected function getStatusNameAttr($value,$data) {

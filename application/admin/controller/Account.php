@@ -12,13 +12,16 @@ namespace app\admin\controller;
 use app\admin\service\Admin;
 use app\admin\service\BehaviorLog;
 use app\admin\service\LoginLog;
+use app\admin\service\AuthGroup as AuthGroupService;
 
 class Account extends Common {
 
     protected $admin;
+    protected $authGroup;
 
     protected function _before(){
         $this->admin=new Admin();
+        $this->authGroup=new AuthGroupService();
     }
 
     /**
@@ -58,7 +61,7 @@ class Account extends Common {
             $this->result=$this->admin->add($this->params);
             return $this->_result();
         }else{
-            return $this->_fetch(["list_status"=>$this->admin->list_status]);
+            return $this->_fetch(["list_status"=>$this->admin->list_status,"list_group"=>$this->authGroup->getAll($this->params)]);
         }
     }
 
@@ -79,7 +82,7 @@ class Account extends Common {
             $this->result=$this->admin->getById($this->params["id"]);
             if($this->result["code"]==0) return $this->_jump();
             $this->result["list_status"] = $this->admin->list_status;
-            return $this->_fetch(["data"=>$this->result["data"],"list_status"=>$this->admin->list_status]);
+            return $this->_fetch(["data"=>$this->result["data"],"list_status"=>$this->admin->list_status,"list_group"=>$this->authGroup->getAll($this->params)]);
         }
     }
 
@@ -103,6 +106,27 @@ class Account extends Common {
 
         $this->result=$this->admin->del($this->params["id"]);
         return $this->_result();
+    }
+
+    /**
+     * 修改用户组信息
+     */
+    public function editGroup(){
+        if(!isset($this->params["id"])){
+            $this->result["code"]=0;
+            $this->result["msg"]="参数错误";
+            return $this->_jump();
+        }
+
+
+        if($this->request->isPost()){
+            $this->result=$this->authGroup->editGroupAccess($this->params);
+            return $this->_result();
+        }else{
+            $this->result=$this->admin->getById($this->params["id"]);
+            if($this->result["code"]==0) return $this->_jump();
+            return $this->_fetch(["data"=>$this->result["data"],"list_group"=>$this->authGroup->getAll($this->params)]);
+        }
     }
 
     /**

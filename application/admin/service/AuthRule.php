@@ -14,68 +14,66 @@ use think\Loader;
 
 class AuthRule extends AuthRuleModel {
 
-    public function add($row){
-        $row=params_format($row);
+    public function add($params){
+        $params=params_format($params);
         $validate = Loader::validate('AuthRule');
-        if(!$validate->scene("add")->check($row)){
+        if(!$validate->scene("add")->check($params)){
             $this->result["code"]=0;
             $this->result["msg"]=$validate->getError();
             unset($validate);
             return $this->result;
         }
-        $this->allowField(true)->isUpdate(false)->save($row);
+        $this->allowField(true)->isUpdate(false)->save($params);
         if(empty($this->id)){
             $this->result["code"]=0;
             $this->result["msg"]="新增失败";
         }else{
-            $this->result=$this->getById($this->id);
             $this->result["msg"]="新增成功";
         }
         return $this->result;
     }
 
-    public function edit($row){
-        $row=params_format($row);
+    public function edit($params){
+        $params=params_format($params);
         $validate = Loader::validate('AuthRule');
-        if(!$validate->scene("edit")->check($row)){
+        if(!$validate->scene("edit")->check($params)){
             $this->result["code"]=0;
             $this->result["msg"]=$validate->getError();
             unset($validate);
             return $this->result;
         }
-        $id=$row["id"];
-        unset($row["id"]);
+        $id=$params["id"];
+        unset($params["id"]);
         $data=$this->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="数据不存在，修改失败";
             return $this->result;
         }
-        $res=$data->allowField(true)->save($row);
+        $res=$data->allowField(true)->save($params);
         if(empty($res)){
             $this->result["code"]=0;
             $this->result["msg"]="修改失败";
         }else{
-            $this->result=$this->getById($id);
             $this->result["msg"]="修改成功";
         }
         return $this->result;
     }
 
     public function getById($id){
-        $data=$this->field("id,name,title,type,status,condition,create_time,update_time")->find($id);
+        $data=$this->field("id,name,title,icon,type,status,condition,create_time,update_time")->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="规则不存在";
         }else{
-            $this->result["data"]=$data->append(["status_name"])->toArray();
+            $this->result["data"]=$data->append(["type_name","status_name"])->toArray();
         }
         unset($data);
         return $this->result;
     }
 
     public function del($id){
-        $data=$this->field("id,name,title,type,status,condition,create_time,update_time")->find($id);
+        $data=$this->field("id,name,title,icon,type,status,condition,create_time,update_time")->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="规则不存在";
@@ -98,29 +96,24 @@ class AuthRule extends AuthRuleModel {
         return $this->result;
     }
 
-    public function editStatus($row){
+    public function editStatus($params){
 
         $validate = Loader::validate('AuthRule');
-        if(!$validate->scene("edit_status")->check($row)){
+        if(!$validate->scene("edit_status")->check($params)){
             $this->result["code"]=0;
             $this->result["msg"]=$validate->getError();
             unset($validate);
             return $this->result;
         }
-        if($row["id"]==1){
-            $this->result["code"]=0;
-            $this->result["msg"]="系统账号不可以禁用";
-            return $this->result;
-        }
-        $id=$row["id"];
-        unset($row["id"]);
+        $id=$params["id"];
+        unset($params["id"]);
         $data=$this->field("id,status")->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="数据不存在，修改失败";
             return $this->result;
         }
-        $res=$data->allowField(["status","update_time"])->save($row);
+        $res=$data->allowField(["status","update_time"])->save($params);
         if(empty($res)){
             $this->result["code"]=0;
             $this->result["msg"]="修改失败";
@@ -131,46 +124,47 @@ class AuthRule extends AuthRuleModel {
         return $this->result;
     }
 
-    public function getList($row){
+    public function getList($params){
 
-        if(!isset($row["page"])) $row["page"]=1;
-        if(!isset($row["limit"])) $row["limit"]=10;
+        if(!isset($params["page"])) $params["page"]=1;
+        if(!isset($params["limit"])) $params["limit"]=10;
         $where=[];
         $order="id desc";
-        if(isset($row["keyword"]) && !empty($row["keyword"])) $where["name|title|condition"]=["like","%{$row["keyword"]}%"];
-        array_map(function ($value) use (&$where,$row){
-            if(isset($row[$value]) && !empty($row[$value])) $where[$value]=["like","%{$row[$value]}%"];
+        if(isset($params["keyword"]) && !empty($params["keyword"])) $where["name|title|condition"]=["like","%{$params["keyword"]}%"];
+        array_map(function ($value) use (&$where,$params){
+            if(isset($params[$value]) && !empty($params[$value])) $where[$value]=["like","%{$params[$value]}%"];
         },
             ["name","title","condition"]
         );
-        array_map(function ($value) use (&$where,$row){
-            if(isset($row[$value]) && !empty($row[$value])) $where[$value]=$row[$value];
+        array_map(function ($value) use (&$where,$params){
+            if(isset($params[$value]) && !empty($params[$value])) $where[$value]=$params[$value];
         },
             ["type","status"]
         );
-        if(!isset($row["begin_time"])) $row["begin_time"]="";
-        if(!isset($row["end_time"])) $row["end_time"]="";
-        if(!empty($row["begin_time"])&&empty($row["end_time"])){
-            $where["create_time"]=["egt",strtotime($row["begin_time"]." 00:00:00")];
-        }elseif(empty($row["begin_time"])&&!empty($row["end_time"])){
-            $where["create_time"]=["elt",strtotime($row["end_time"]." 23:59:59")];
-        }elseif(!empty($row["begin_time"])&&!empty($row["end_time"])){
-            $where["create_time"]=["between",[strtotime($row["begin_time"]." 00:00:00"),strtotime($row["end_time"]." 23:59:59")]];
+        if(!isset($params["begin_time"])) $params["begin_time"]="";
+        if(!isset($params["end_time"])) $params["end_time"]="";
+        if(!empty($params["begin_time"])&&empty($params["end_time"])){
+            $where["create_time"]=["egt",strtotime($params["begin_time"]." 00:00:00")];
+        }elseif(empty($params["begin_time"])&&!empty($params["end_time"])){
+            $where["create_time"]=["elt",strtotime($params["end_time"]." 23:59:59")];
+        }elseif(!empty($params["begin_time"])&&!empty($params["end_time"])){
+            $where["create_time"]=["between",[strtotime($params["begin_time"]." 00:00:00"),strtotime($params["end_time"]." 23:59:59")]];
         }
-        if(isset($row["field"])){
-            if(!empty($row["field"])){
-                if($row["field"]=="status_name") $row["field"]="status";
-                $order="{$row["field"]} {$row["order"]}";
+        if(isset($params["field"])){
+            if(!empty($params["field"])){
+                if($params["field"]=="type_name") $params["field"]="type";
+                if($params["field"]=="status_name") $params["field"]="status";
+                $order="{$params["field"]} {$params["order"]}";
             }
         }
-        $list=$this->field("id,name,title,type,status,condition,create_time,update_time")->where($where)->page($row["page"],$row["limit"])->order($order)->select();
+        $list=$this->field("id,name,title,icon,type,status,condition,create_time,update_time")->where($where)->page($params["page"],$params["limit"])->order($order)->select();
         $this->result["count"]=$this->where($where)->Count();
-        unset($row,$where);
+        unset($params,$where);
         if(empty($list)){
             $list=[];
         }else{
             foreach ($list as $key=>$value){
-                $list[$key]=$value->append(["status_name"])->toArray();
+                $list[$key]=$value->append(["type_name","status_name"])->toArray();
             }
             unset($key,$value);
         }
@@ -180,8 +174,35 @@ class AuthRule extends AuthRuleModel {
     }
 
 
-    public function getAll(){
-        $list=$this->order("id asc")->column("name,title,type,status,condition","id");
+    /**
+     * 用户组菜单列表
+     * bool型json会转成0,1，zTree识别不出来，所以要加引号
+     */
+    public function getAll($params){
+        $list=$this->order("id asc")->column("id,name,title,icon,type,status,condition,pid","id");
+        if(!empty($list)){
+            $rules=[];
+            if(isset($params["group_id"]) && !empty($params["group_id"])){
+                $authGroup=new AuthGroup();
+                $rules=$authGroup->where(["id"=>$params["group_id"]])->value("rules");
+                $rules=explode(",",$rules);
+                unset($authGroup);
+            }
+            foreach ($list as $key=>$value){
+                if(empty($value["pid"])){
+                    $list[$key]["open"]='true';
+                }else{
+                    if(!isset($list[$key]["open"])) $list[$key]["open"]='false';
+                    $list[$value["pid"]]["open"]='true';
+                }
+                if(in_array($value["id"],$rules)){
+                    $list[$key]["checked"]='true';
+                }else{
+                    $list[$key]["checked"]='false';
+                }
+            }
+            unset($key,$value,$rules);
+        }
         return array_values($list);
     }
 

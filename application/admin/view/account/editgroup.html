@@ -1,0 +1,51 @@
+{extend name="layout:form" /}
+
+{block name="main"}
+<!--class="mb60"-->
+<form class="layui-form" action="" lay-filter="form-edit">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="" value="{$data.username}" disabled class="layui-input layui-btn-disabled">
+        </div>
+    </div>
+    <!--<div class="layui-form-item">
+        <label class="layui-form-label">用户组</label>
+        <div class="layui-input-block">
+            {volist name="list_group" id="vo"}
+            <input type="checkbox" name="group_id[{$vo.id}]" title="{$vo.title}" {$vo.checked} {$vo.disabled}>
+            {/volist}
+        </div>
+    </div>-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户组</label>
+        <div class="layui-input-block">
+            {volist name="list_group" id="vo"}
+            <input type="radio" name="group_id" value="{$vo.id}" title="{$vo.title}" {$vo.checked} {$vo.disabled}>
+            {/volist}
+        </div>
+    </div>
+    <div class="layui-form-item  button_fixed" style="display: none">
+        <div class="layui-input-block">
+            <input type="hidden" name="id" value="{$data.id}" />
+            <button class="layui-btn" lay-submit lay-filter="demo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+{/block}
+
+{block name="foot"}
+<script>
+
+    layui.use(['myform'], function() {
+        var myform = layui.myform;
+
+        myform.set({
+            'url':"{:Url('admin/Account/edit')}"
+        }).init();
+    })
+
+</script>
+{/block}

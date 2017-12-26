@@ -15,35 +15,35 @@ use think\Loader;
 
 class Admin extends AdminModel {
 
-    public function editMyInfo($row){
-        $row=params_format($row,["password"]);
-        $row["id"]=Cookie::get("login_id");
+    public function editMyInfo($params){
+        $params=params_format($params,["password"]);
+        $params["id"]=Cookie::get("login_id");
         $validate = Loader::validate('Admin');
-        if(!$validate->scene("edit")->check($row)){
+        if(!$validate->scene("edit")->check($params)){
             $this->result["code"]=0;
             $this->result["msg"]=$validate->getError();
             unset($validate);
             return $this->result;
         }
-        if(check_phone($row["username"])){
+        if(check_phone($params["username"])){
             $this->result["code"]=0;
             $this->result["msg"]="用户名不能是手机号";
             return $this->result;
         }
-        if(check_email($row["username"])){
+        if(check_email($params["username"])){
             $this->result["code"]=0;
             $this->result["msg"]="用户名不能是邮箱号";
             return $this->result;
         }
-        $id=$row["id"];
-        unset($row["id"]);
+        $id=$params["id"];
+        unset($params["id"]);
         $data=$this->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="数据不存在，修改失败";
             return $this->result;
         }
-        $res=$data->allowField(true)->save($row);
+        $res=$data->allowField(true)->save($params);
         if(empty($res)){
             $this->result["code"]=0;
             $this->result["msg"]="修改失败";
@@ -55,69 +55,77 @@ class Admin extends AdminModel {
     }
 
 
-    public function add($row){
-        $row=params_format($row,["password"]);
+    public function add($params){
+        $params=params_format($params,["password"]);
         $validate = Loader::validate('Admin');
-        if(!$validate->scene("add")->check($row)){
+        if(!$validate->scene("add")->check($params)){
             $this->result["code"]=0;
             $this->result["msg"]=$validate->getError();
             unset($validate);
             return $this->result;
         }
-        if(check_phone($row["username"])){
+        if(check_phone($params["username"])){
             $this->result["code"]=0;
             $this->result["msg"]="用户名不能是手机号";
             return $this->result;
         }
-        if(check_email($row["username"])){
+        if(check_email($params["username"])){
             $this->result["code"]=0;
             $this->result["msg"]="用户名不能是邮箱号";
             return $this->result;
         }
-        $this->allowField(true)->isUpdate(false)->save($row);
+        $this->allowField(true)->isUpdate(false)->save($params);
         if(empty($this->id)){
             $this->result["code"]=0;
             $this->result["msg"]="新增失败";
         }else{
-            $this->result=$this->getById($this->id);
+            if(isset($params["group_id"])){
+                $authGroup = new AuthGroup();
+                $this->result=$authGroup->editGroupAccess(["id"=>$this->id,"group_id"=>$params["group_id"]]);
+                unset($authGroup);
+            }
             $this->result["msg"]="新增成功";
         }
         return $this->result;
     }
 
-    public function edit($row){
-        $row=params_format($row,["password"]);
+    public function edit($params){
+        $params=params_format($params,["password"]);
         $validate = Loader::validate('Admin');
-        if(!$validate->scene("edit")->check($row)){
+        if(!$validate->scene("edit")->check($params)){
             $this->result["code"]=0;
             $this->result["msg"]=$validate->getError();
             unset($validate);
             return $this->result;
         }
-        if(check_phone($row["username"])){
+        if(check_phone($params["username"])){
             $this->result["code"]=0;
             $this->result["msg"]="用户名不能是手机号";
             return $this->result;
         }
-        if(check_email($row["username"])){
+        if(check_email($params["username"])){
             $this->result["code"]=0;
             $this->result["msg"]="用户名不能是邮箱号";
             return $this->result;
         }
-        $id=$row["id"];
-        unset($row["id"]);
+        $id=$params["id"];
+        unset($params["id"]);
         $data=$this->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="数据不存在，修改失败";
             return $this->result;
         }
-        $res=$data->allowField(true)->save($row);
+        $res=$data->allowField(true)->save($params);
         if(empty($res)){
             $this->result["code"]=0;
             $this->result["msg"]="修改失败";
         }else{
-            $this->result=$this->getById($id);
+            if(isset($params["group_id"])){
+                $authGroup = new AuthGroup();
+                $this->result=$authGroup->editGroupAccess(["id"=>$id,"group_id"=>$params["group_id"]]);
+                unset($authGroup);
+            }
             $this->result["msg"]="修改成功";
         }
         return $this->result;
@@ -159,69 +167,68 @@ class Admin extends AdminModel {
         return $this->result;
     }
 
-    public function editStatus($row){
+    public function editStatus($params){
 
         $validate = Loader::validate('Admin');
-        if(!$validate->scene("edit_status")->check($row)){
+        if(!$validate->scene("edit_status")->check($params)){
             $this->result["code"]=0;
             $this->result["msg"]=$validate->getError();
             unset($validate);
             return $this->result;
         }
-        if($row["id"]==1){
+        if($params["id"]==1){
             $this->result["code"]=0;
             $this->result["msg"]="系统账号不可以禁用";
             return $this->result;
         }
-        $id=$row["id"];
-        unset($row["id"]);
+        $id=$params["id"];
+        unset($params["id"]);
         $data=$this->field("id,status")->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="数据不存在，修改失败";
             return $this->result;
         }
-        $res=$data->allowField(["status","update_time"])->save($row);
+        $res=$data->allowField(["status","update_time"])->save($params);
         if(empty($res)){
             $this->result["code"]=0;
             $this->result["msg"]="修改失败";
         }else{
-            $this->result=$this->getById($id);
             $this->result["msg"]="修改成功";
         }
         return $this->result;
     }
 
-    public function getList($row){
+    public function getList($params){
 
-        if(!isset($row["page"])) $row["page"]=1;
-        if(!isset($row["limit"])) $row["limit"]=10;
+        if(!isset($params["page"])) $params["page"]=1;
+        if(!isset($params["limit"])) $params["limit"]=10;
         $where=[];
         $order="id desc";
-        if(isset($row["keyword"]) && !empty($row["keyword"])) $where["username|true_name|mobile|email"]=["like","%{$row["keyword"]}%"];
-        array_map(function ($value) use (&$where,$row){
-                if(isset($row[$value]) && !empty($row[$value])) $where[$value]=$row[$value];
+        if(isset($params["keyword"]) && !empty($params["keyword"])) $where["username|true_name|mobile|email"]=["like","%{$params["keyword"]}%"];
+        array_map(function ($value) use (&$where,$params){
+                if(isset($params[$value]) && !empty($params[$value])) $where[$value]=$params[$value];
             },
             ["username","true_name","mobile","email","status"]
         );
-        if(!isset($row["begin_time"])) $row["begin_time"]="";
-        if(!isset($row["end_time"])) $row["end_time"]="";
-        if(!empty($row["begin_time"])&&empty($row["end_time"])){
-            $where["create_time"]=["egt",strtotime($row["begin_time"]." 00:00:00")];
-        }elseif(empty($row["begin_time"])&&!empty($row["end_time"])){
-            $where["create_time"]=["elt",strtotime($row["end_time"]." 23:59:59")];
-        }elseif(!empty($row["begin_time"])&&!empty($row["end_time"])){
-            $where["create_time"]=["between",[strtotime($row["begin_time"]." 00:00:00"),strtotime($row["end_time"]." 23:59:59")]];
+        if(!isset($params["begin_time"])) $params["begin_time"]="";
+        if(!isset($params["end_time"])) $params["end_time"]="";
+        if(!empty($params["begin_time"])&&empty($params["end_time"])){
+            $where["create_time"]=["egt",strtotime($params["begin_time"]." 00:00:00")];
+        }elseif(empty($params["begin_time"])&&!empty($params["end_time"])){
+            $where["create_time"]=["elt",strtotime($params["end_time"]." 23:59:59")];
+        }elseif(!empty($params["begin_time"])&&!empty($params["end_time"])){
+            $where["create_time"]=["between",[strtotime($params["begin_time"]." 00:00:00"),strtotime($params["end_time"]." 23:59:59")]];
         }
-        if(isset($row["field"])){
-            if(!empty($row["field"])){
-                if($row["field"]=="status_name") $row["field"]="status";
-                $order="{$row["field"]} {$row["order"]}";
+        if(isset($params["field"])){
+            if(!empty($params["field"])){
+                if($params["field"]=="status_name") $params["field"]="status";
+                $order="{$params["field"]} {$params["order"]}";
             }
         }
-        $list=$this->field("id,username,true_name,mobile,email,status,create_time,last_login_time,ip,area")->where($where)->page($row["page"],$row["limit"])->order($order)->select();
+        $list=$this->field("id,username,true_name,mobile,email,status,create_time,last_login_time,ip,area")->where($where)->page($params["page"],$params["limit"])->order($order)->select();
         $this->result["count"]=$this->where($where)->Count();
-        unset($row,$where);
+        unset($params,$where);
         if(empty($list)){
             $list=[];
         }else{
@@ -238,7 +245,7 @@ class Admin extends AdminModel {
 
 
     public function getAll(){
-        $list=$this->order("id asc")->column("username,true_name,email,mobile,status","id");
+        $list=$this->order("id asc")->column("id,username,true_name,email,mobile,status","id");
         return array_values($list);
     }
 

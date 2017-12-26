@@ -29,7 +29,7 @@ class AuthRule extends Common {
             $this->result=$this->authRule->getList($this->params);
             return $this->_result();
         }else{
-            return $this->_fetch(["list_status"=>$this->authRule->list_status]);
+            return $this->_fetch(["list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status]);
         }
     }
 
@@ -42,7 +42,7 @@ class AuthRule extends Common {
             $this->result=$this->authRule->add($this->params);
             return $this->_result();
         }else{
-            return $this->_fetch(["list_status"=>$this->authRule->list_status]);
+            return $this->_fetch(["list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status]);
         }
     }
 
@@ -63,7 +63,7 @@ class AuthRule extends Common {
             $this->result=$this->authRule->getById($this->params["id"]);
             if($this->result["code"]==0) return $this->_jump();
             $this->result["list_status"] = $this->authRule->list_status;
-            return $this->_fetch(["data"=>$this->result["data"],"list_status"=>$this->authRule->list_status]);
+            return $this->_fetch(["data"=>$this->result["data"],"list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status]);
         }
     }
 
@@ -87,6 +87,16 @@ class AuthRule extends Common {
 
         $this->result=$this->authRule->del($this->params["id"]);
         return $this->_result();
+    }
+
+
+    public function getAll(){
+//        if($this->request->isPost()){
+            $this->result=$this->authRule->getAll($this->params);
+            return $this->_result();
+//        }else{
+//            return $this->_fetch(["list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status]);
+//        }
     }
 
 }

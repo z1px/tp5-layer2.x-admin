@@ -10,48 +10,48 @@ namespace app\admin\service;
 
 
 use \app\admin\model\AuthGroup as AuthGroupModel;
+use app\admin\model\AuthGroupAccount;
 use think\Loader;
 
 class AuthGroup extends AuthGroupModel {
 
-    public function add($row){
-        $row=params_format($row);
+    public function add($params){
+        $params=params_format($params);
         $validate = Loader::validate('AuthGroup');
-        if(!$validate->scene("add")->check($row)){
+        if(!$validate->scene("add")->check($params)){
             $this->result["code"]=0;
             $this->result["msg"]=$validate->getError();
             unset($validate);
             return $this->result;
         }
-        $this->allowField(true)->isUpdate(false)->save($row);
+        $this->allowField(true)->isUpdate(false)->save($params);
         if(empty($this->id)){
             $this->result["code"]=0;
             $this->result["msg"]="新增失败";
         }else{
-            $this->result=$this->getById($this->id);
             $this->result["msg"]="新增成功";
         }
         return $this->result;
     }
 
-    public function edit($row){
-        $row=params_format($row);
+    public function edit($params){
+        $params=params_format($params);
         $validate = Loader::validate('AuthGroup');
-        if(!$validate->scene("edit")->check($row)){
+        if(!$validate->scene("edit")->check($params)){
             $this->result["code"]=0;
             $this->result["msg"]=$validate->getError();
             unset($validate);
             return $this->result;
         }
-        $id=$row["id"];
-        unset($row["id"]);
+        $id=$params["id"];
+        unset($params["id"]);
         $data=$this->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="数据不存在，修改失败";
             return $this->result;
         }
-        $res=$data->allowField(true)->save($row);
+        $res=$data->allowField(true)->save($params);
         if(empty($res)){
             $this->result["code"]=0;
             $this->result["msg"]="修改失败";
@@ -93,69 +93,68 @@ class AuthGroup extends AuthGroupModel {
         return $this->result;
     }
 
-    public function editStatus($row){
+    public function editStatus($params){
 
         $validate = Loader::validate('AuthGroup');
-        if(!$validate->scene("edit_status")->check($row)){
+        if(!$validate->scene("edit_status")->check($params)){
             $this->result["code"]=0;
             $this->result["msg"]=$validate->getError();
             unset($validate);
             return $this->result;
         }
-        $id=$row["id"];
-        unset($row["id"]);
+        $id=$params["id"];
+        unset($params["id"]);
         $data=$this->field("id,status")->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="数据不存在，修改失败";
             return $this->result;
         }
-        $res=$data->allowField(["status","update_time"])->save($row);
+        $res=$data->allowField(["status","update_time"])->save($params);
         if(empty($res)){
             $this->result["code"]=0;
             $this->result["msg"]="修改失败";
         }else{
-            $this->result=$this->getById($id);
             $this->result["msg"]="修改成功";
         }
         return $this->result;
     }
 
-    public function getList($row){
+    public function getList($params){
 
-        if(!isset($row["page"])) $row["page"]=1;
-        if(!isset($row["limit"])) $row["limit"]=10;
+        if(!isset($params["page"])) $params["page"]=1;
+        if(!isset($params["limit"])) $params["limit"]=10;
         $where=[];
         $order="id desc";
-        if(isset($row["keyword"]) && !empty($row["keyword"])) $where["title|rules"]=["like","%{$row["keyword"]}%"];
-        array_map(function ($value) use (&$where,$row){
-            if(isset($row[$value]) && !empty($row[$value])) $where[$value]=["like","%{$row[$value]}%"];
+        if(isset($params["keyword"]) && !empty($params["keyword"])) $where["title|rules"]=["like","%{$params["keyword"]}%"];
+        array_map(function ($value) use (&$where,$params){
+            if(isset($params[$value]) && !empty($params[$value])) $where[$value]=["like","%{$params[$value]}%"];
         },
             ["title","rules"]
         );
-        array_map(function ($value) use (&$where,$row){
-            if(isset($row[$value]) && !empty($row[$value])) $where[$value]=$row[$value];
+        array_map(function ($value) use (&$where,$params){
+            if(isset($params[$value]) && !empty($params[$value])) $where[$value]=$params[$value];
         },
             ["status"]
         );
-        if(!isset($row["begin_time"])) $row["begin_time"]="";
-        if(!isset($row["end_time"])) $row["end_time"]="";
-        if(!empty($row["begin_time"])&&empty($row["end_time"])){
-            $where["create_time"]=["egt",strtotime($row["begin_time"]." 00:00:00")];
-        }elseif(empty($row["begin_time"])&&!empty($row["end_time"])){
-            $where["create_time"]=["elt",strtotime($row["end_time"]." 23:59:59")];
-        }elseif(!empty($row["begin_time"])&&!empty($row["end_time"])){
-            $where["create_time"]=["between",[strtotime($row["begin_time"]." 00:00:00"),strtotime($row["end_time"]." 23:59:59")]];
+        if(!isset($params["begin_time"])) $params["begin_time"]="";
+        if(!isset($params["end_time"])) $params["end_time"]="";
+        if(!empty($params["begin_time"])&&empty($params["end_time"])){
+            $where["create_time"]=["egt",strtotime($params["begin_time"]." 00:00:00")];
+        }elseif(empty($params["begin_time"])&&!empty($params["end_time"])){
+            $where["create_time"]=["elt",strtotime($params["end_time"]." 23:59:59")];
+        }elseif(!empty($params["begin_time"])&&!empty($params["end_time"])){
+            $where["create_time"]=["between",[strtotime($params["begin_time"]." 00:00:00"),strtotime($params["end_time"]." 23:59:59")]];
         }
-        if(isset($row["field"])){
-            if(!empty($row["field"])){
-                if($row["field"]=="status_name") $row["field"]="status";
-                $order="{$row["field"]} {$row["order"]}";
+        if(isset($params["field"])){
+            if(!empty($params["field"])){
+                if($params["field"]=="status_name") $params["field"]="status";
+                $order="{$params["field"]} {$params["order"]}";
             }
         }
-        $list=$this->field("id,title,status,rules,create_time,update_time")->where($where)->page($row["page"],$row["limit"])->order($order)->select();
+        $list=$this->field("id,title,status,rules,create_time,update_time")->where($where)->page($params["page"],$params["limit"])->order($order)->select();
         $this->result["count"]=$this->where($where)->Count();
-        unset($row,$where);
+        unset($params,$where);
         if(empty($list)){
             $list=[];
         }else{
@@ -169,9 +168,70 @@ class AuthGroup extends AuthGroupModel {
         return $this->result;
     }
 
+    /**
+     * 给用户分配用户组
+     * @param $params
+     * @return array
+     */
+    public function editGroupAccess($params){
+        $params=params_format($params);
+        $validate = Loader::validate('AuthGroupAccess');
+        if(!$validate->check($params)){
+            $this->result["code"]=0;
+            $this->result["msg"]=$validate->getError();
+            unset($validate);
+            return $this->result;
+        }
+        $uid=$params["id"];
+        $group_ids=[];
+        if(isset($params["group_id"]) && !empty($params["group_id"])){
+            $group_ids=is_array($params["group_id"])?array_keys($params["group_id"]):[$params["group_id"]];
+        }
+        $authGroupAccess = new AuthGroupAccount();
+        if($group_ids){
+            $authGroupAccess->where(["uid"=>$uid,"group_id"=>["not in",$group_ids]])->delete();
+            $group_ids_in = $authGroupAccess->where(["uid"=>$uid])->column("group_id","id");
+            if($group_ids_in) $group_ids = array_diff($group_ids,array_values($group_ids_in)); //求差集，即未分配的用户组
+            unset($group_ids_in);
+            if($group_ids){
+                $rows=[];
+                foreach ($group_ids as $value){
+                    $rows[]=["uid"=>$uid,"group_id"=>$value];
+                }
+                $res = $authGroupAccess->saveAll($rows);
+            }else{
+                $res = true;
+            }
+        }else{
+            $res = $authGroupAccess->where(["uid"=>$uid])->delete();
+        }
+        unset($params["id"]);
 
-    public function getAll(){
-        $list=$this->order("id asc")->column("title,status,rules","id");
+        if(empty($res)){
+            $this->result["code"]=0;
+            $this->result["msg"]="修改失败";
+        }else{
+//            $this->result["data"]=$this->getAll($params);
+            $this->result["msg"]="修改成功";
+        }
+        return $this->result;
+    }
+
+
+    public function getAll($params){
+        $list=$this->order("id asc")->column("id,title,status,rules","id");
+        if($list){
+            $groupAccess = [];
+            if(isset($params["id"]) && !empty($params["id"])){
+                $authGroupAccess = new AuthGroupAccount();
+                $groupAccess = $authGroupAccess->where(["uid"=>$params["id"]])->column("group_id","id");
+                unset($authGroupAccess);
+            }
+            foreach ($list as $key=>$value){
+                $list[$key]["checked"] = in_array($value["id"],$groupAccess)?"checked":"";
+                $list[$key]["disabled"] = $value["status"]==1?"":"disabled";
+            }
+        }
         return array_values($list);
     }
 

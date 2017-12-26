@@ -34,25 +34,25 @@ class Login {
 
     /**
      * 登录验证
-     * @param $row
+     * @param $params
      * @return array
      */
-    public function login($row){
+    public function login($params){
         $validate = Loader::validate('Login');
-        if(!$validate->check($row)){
+        if(!$validate->check($params)){
             $this->result["code"]=0;
             $this->result["msg"]=$validate->getError();
             unset($validate);
             return $this->result;
         }
-        if(!isset($row["rememberMe"])) $row["rememberMe"]=false;
+        if(!isset($params["rememberMe"])) $params["rememberMe"]=false;
         $where=[];
-        if(check_phone($row["username"])){
-            $where["mobile"]=$row["username"];
-        }elseif(check_email($row["username"])){
-            $where["email"]=$row["username"];
+        if(check_phone($params["username"])){
+            $where["mobile"]=$params["username"];
+        }elseif(check_email($params["username"])){
+            $where["email"]=$params["username"];
         }else{
-            $where["username"]=$row["username"];
+            $where["username"]=$params["username"];
         }
         $data=$this->admin->field("id,username,password,true_name,mobile,email,status")->where($where)->find();
         if(empty($data)){
@@ -60,7 +60,7 @@ class Login {
             $this->result["msg"]="账号不存在";
             return $this->result;
         }
-        if($data->password!=auth_code($row["password"],"ENCODE",Config::get('login_key'))){
+        if($data->password!=auth_code($params["password"],"ENCODE",Config::get('login_key'))){
             $this->result["code"]=0;
             $this->result["msg"]="账号或者密码错误！";
             return $this->result;
@@ -79,7 +79,7 @@ class Login {
             return $this->result;
         }
         unset($res);
-        if($row["rememberMe"]){
+        if($params["rememberMe"]){
             Cookie::forever("login_id",$data->id);
             Cookie::forever("login_name",$data->username);
             Cookie::forever("login_key",$data->login_key);

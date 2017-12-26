@@ -26,8 +26,8 @@ class BehaviorLog {
 
         if(!$extra["request"]->isPost() && !$extra["request"]->isAjax()) return ;
 
-        $allow_action=["add","edit","del","myinfo","editstatus"];
-        if(!in_array(strtolower($extra["request"]->action()),$allow_action)) return ;
+        $allow_action=["add","edit","del","myinfo","editstatus","editgroup"];
+        if(!in_array(strtolower($extra["request"]->action()),$allow_action) && "upload"!=strtolower($extra["request"]->controller())) return ;
 
         $row=[
             "title"=>isset(Config::get("behavior_title")[strtolower($extra["request"]->module())][strtolower($extra["request"]->controller())][strtolower($extra["request"]->action())])?Config::get("behavior_title")[strtolower($extra["request"]->module())][strtolower($extra["request"]->controller())][strtolower($extra["request"]->action())]:"",

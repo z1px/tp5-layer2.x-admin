@@ -18,7 +18,7 @@ class AuthGroup extends Validate {
         'id'=>'require|integer',
         'title'=>'require|unique:auth_group,title',
         'rules'=>'require',
-        'status'=>'in:0,1',
+        'status'=>'in:1,2',
     ];
 
     // 错误提示

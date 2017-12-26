@@ -14,39 +14,39 @@ use \app\admin\model\BehaviorLog as BehaviorLogModel;
 class BehaviorLog extends BehaviorLogModel {
 
 
-    public function getList($row){
+    public function getList($params){
 
-        if(!isset($row["pageIndex"])) $row["pageIndex"]=1;
-        if(!isset($row["pageSize"])) $row["pageSize"]=10;
+        if(!isset($params["pageIndex"])) $params["pageIndex"]=1;
+        if(!isset($params["pageSize"])) $params["pageSize"]=10;
         $where=[];
         $order="id desc";
-        if(isset($row["keyword"]) && !empty($row["keyword"])) $where["title|module|controller|action|url|request|response"]=["like","%{$row["keyword"]}%"];
-        array_map(function ($value) use (&$where,$row){
-            if(isset($row[$value]) && !empty($row[$value])) $where[$value]=["like","%{$row[$value]}%"];
+        if(isset($params["keyword"]) && !empty($params["keyword"])) $where["title|module|controller|action|url|request|response"]=["like","%{$params["keyword"]}%"];
+        array_map(function ($value) use (&$where,$params){
+            if(isset($params[$value]) && !empty($params[$value])) $where[$value]=["like","%{$params[$value]}%"];
         },
             ["title","request","response"]
         );
-        array_map(function ($value) use (&$where,$row){
-            if(isset($row[$value]) && !empty($row[$value])) $where[$value]=$row[$value];
+        array_map(function ($value) use (&$where,$params){
+            if(isset($params[$value]) && !empty($params[$value])) $where[$value]=$params[$value];
         },
             ["module","controller","action","type","admin_id"]
         );
-        if(isset($row["sort"]) && !empty($row["sort"])){
-            $order="{$row["sort"]} {$row["order"]}";
+        if(isset($params["sort"]) && !empty($params["sort"])){
+            $order="{$params["sort"]} {$params["order"]}";
         }
-        if(!isset($row["begin_time"])) $row["begin_time"]="";
-        if(!isset($row["end_time"])) $row["end_time"]="";
-        if(!empty($row["begin_time"])&&empty($row["end_time"])){
-            $where["create_time"]=["egt",strtotime($row["begin_time"])];
-        }elseif(empty($row["begin_time"])&&!empty($row["end_time"])){
-            $where["create_time"]=["elt",strtotime($row["end_time"])];
-        }elseif(!empty($row["begin_time"])&&!empty($row["end_time"])){
-            $where["create_time"]=["between",[strtotime($row["begin_time"]),strtotime($row["end_time"])]];
+        if(!isset($params["begin_time"])) $params["begin_time"]="";
+        if(!isset($params["end_time"])) $params["end_time"]="";
+        if(!empty($params["begin_time"])&&empty($params["end_time"])){
+            $where["create_time"]=["egt",strtotime($params["begin_time"])];
+        }elseif(empty($params["begin_time"])&&!empty($params["end_time"])){
+            $where["create_time"]=["elt",strtotime($params["end_time"])];
+        }elseif(!empty($params["begin_time"])&&!empty($params["end_time"])){
+            $where["create_time"]=["between",[strtotime($params["begin_time"]),strtotime($params["end_time"])]];
         }
 
-        $list=$this->field("id,admin_id,username,title,module,controller,action,url,type,request,response,ip,area,create_time")->where($where)->page($row["pageIndex"],$row["pageSize"])->order($order)->select();
+        $list=$this->field("id,admin_id,username,title,module,controller,action,url,type,request,response,ip,area,create_time")->where($where)->page($params["pageIndex"],$params["pageSize"])->order($order)->select();
         $this->result["count"]=$this->where($where)->Count();
-        unset($row,$where);
+        unset($params,$where);
         if(empty($list)){
             $list=[];
         }else{

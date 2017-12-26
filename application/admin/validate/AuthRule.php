@@ -19,8 +19,8 @@ class AuthRule extends Validate {
         'name'=>'require|unique:auth_rule,name',
         'title'=>'require',
         'type'=>'require|number',
-        'condition'=>'require',
-        'status'=>'in:0,1',
+        'condition'=>'',
+        'status'=>'in:1,2',
     ];
 
     // 错误提示

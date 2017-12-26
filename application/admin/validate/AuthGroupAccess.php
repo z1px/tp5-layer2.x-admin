@@ -11,13 +11,12 @@ namespace app\admin\validate;
 
 use think\Validate;
 
-class AuthGroup extends Validate {
+class AuthGroupAccess extends Validate {
 
     // 验证规则
     protected $rule = [
         'id'=>'require|integer',
-        'uid'=>'require',
-        'group_id'=>'require',
+//        'group_id'=>'require',
     ];
 
     // 错误提示
