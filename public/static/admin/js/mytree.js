@@ -14,15 +14,15 @@ layui.define(['table','form','laytpl','laydate','layer','code','ztree'], functio
                 url: $("#mytree").data("url"), // 异步数据接口
                 method: 'post', // 接口http请求类型
                 request: { // 用于对分页请求的参数
-                    pageName: 'page' //页码的参数名称，默认：page
-                    ,limitName: 'limit' //每页数据量的参数名，默认：limit
+                    pageName: 'page', //页码的参数名称，默认：page
+                    limitName: 'limit' //每页数据量的参数名，默认：limit
                 },
                 response: { // 用于对返回的数据格式的自定义
-                    statusName: 'code' //数据状态的字段名称，默认：code
-                    ,statusCode: 1 //成功的状态码，默认：0
-                    ,msgName: 'msg' //状态信息的字段名称，默认：msg
-                    ,countName: 'count' //数据总数的字段名称，默认：count
-                    ,dataName: 'list' //数据列表的字段名称，默认：data
+                    statusName: 'code', //数据状态的字段名称，默认：code
+                    statusCode: 1, //成功的状态码，默认：0
+                    msgName: 'msg', //状态信息的字段名称，默认：msg
+                    countName: 'count', //数据总数的字段名称，默认：count
+                    dataName: 'list' //数据列表的字段名称，默认：data
                 },
                 height: 'full-50', // 设定容器高度，full-差值，高度将始终铺满，无论浏览器尺寸如何，高度最大化减去差值
                 page: true, // 开启分页

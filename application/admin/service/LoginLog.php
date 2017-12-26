@@ -16,8 +16,8 @@ class LoginLog extends LoginLogModel {
 
     public function getList($params){
 
-        if(!isset($params["pageIndex"])) $params["pageIndex"]=1;
-        if(!isset($params["pageSize"])) $params["pageSize"]=10;
+        if(!isset($params["page"])) $params["page"]=1;
+        if(!isset($params["limit"])) $params["limit"]=10;
         $where=[];
         $order="id desc";
         if(isset($params["keyword"]) && !empty($params["keyword"])) $where["username|account"]=["like","%{$params["keyword"]}%"];
@@ -42,7 +42,7 @@ class LoginLog extends LoginLogModel {
             $where["create_time"]=["between",[strtotime($params["begin_time"]),strtotime($params["end_time"])]];
         }
 
-        $list=$this->field("id,admin_id,username,account,ip,area,create_time")->where($where)->page($params["pageIndex"],$params["pageSize"])->order($order)->select();
+        $list=$this->field("id,admin_id,username,account,ip,area,create_time")->where($where)->page($params["page"],$params["limit"])->order($order)->select();
         $this->result["rel"]=true;
         $this->result["count"]=$this->where($where)->Count();
         unset($params,$where);
