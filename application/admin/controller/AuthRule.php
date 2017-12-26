@@ -26,7 +26,7 @@ class AuthRule extends Common {
     public function table(){
 
         if($this->request->isPost()){
-            $this->result=$this->authRule->getList($this->params);
+            $this->result["list"]=$this->authRule->getRuleList(0,"|—",true);
             return $this->_result();
         }else{
             return $this->_fetch(["list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status]);
@@ -42,7 +42,7 @@ class AuthRule extends Common {
             $this->result=$this->authRule->add($this->params);
             return $this->_result();
         }else{
-            return $this->_fetch(["list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status]);
+            return $this->_fetch(["list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status,"list_rule"=>$this->authRule->getRuleList(),"pid"=>isset($this->params["pid"])?$this->params["pid"]:""]);
         }
     }
 
@@ -63,7 +63,7 @@ class AuthRule extends Common {
             $this->result=$this->authRule->getById($this->params["id"]);
             if($this->result["code"]==0) return $this->_jump();
             $this->result["list_status"] = $this->authRule->list_status;
-            return $this->_fetch(["data"=>$this->result["data"],"list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status]);
+            return $this->_fetch(["data"=>$this->result["data"],"list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status,"list_rule"=>$this->authRule->getRuleList(),"pid"=>isset($this->params["pid"])?$this->params["pid"]:""]);
         }
     }
 
@@ -91,12 +91,13 @@ class AuthRule extends Common {
 
 
     public function getAll(){
-//        if($this->request->isPost()){
+        if($this->request->isPost()){
             $this->result=$this->authRule->getAll($this->params);
             return $this->_result();
-//        }else{
-//            return $this->_fetch(["list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status]);
-//        }
+        }else{
+            $this->result=$this->authRule->getAll($this->params);
+            return $this->_result();
+        }
     }
 
 }

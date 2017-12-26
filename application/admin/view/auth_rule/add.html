@@ -10,6 +10,18 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">上级菜单</label>
+        <div class="layui-input-block">
+            <select name="pid" lay-verify="required" lay-search="">
+                <option value=""></option>
+                <option value="0" {eq name="pid" value="0"}selected{/eq}>顶级菜单</option>
+                {volist name="list_rule" id="vo"}
+                <option value="{$vo.id}" {eq name="pid" value="$vo.id"}selected{/eq} {neq name="vo.status" value="1"}disabled{/neq}>{$vo.title}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">规则标识</label>
         <div class="layui-input-block">
             <input type="text" name="name" lay-verify="required" lay-verType="tips" value="" placeholder="请输入规则唯一标识" autocomplete="off" class="layui-input">

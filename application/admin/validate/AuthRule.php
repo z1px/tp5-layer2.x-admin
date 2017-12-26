@@ -18,6 +18,7 @@ class AuthRule extends Validate {
         'id'=>'require|integer',
         'name'=>'require|unique:auth_rule,name',
         'title'=>'require',
+        'icon'=>'require',
         'type'=>'require|number',
         'condition'=>'',
         'status'=>'in:1,2',
@@ -30,8 +31,8 @@ class AuthRule extends Validate {
 
     // 验证场景
     protected $scene = [
-        'add'=>['name','title','type','condition','status'],
-        'edit'=>['id','name','title','type','condition','status'],
+        'add'=>['name','title','icon','type','condition','status'],
+        'edit'=>['id','name','title','icon','type','condition','status'],
         'edit_status'=>['id','status'],
     ];
 

@@ -219,7 +219,7 @@ class AuthGroup extends AuthGroupModel {
 
 
     public function getAll($params){
-        $list=$this->order("id asc")->column("id,title,status,rules","id");
+        $list=$this->order("id asc")->column("title,status,rules","id");
         if($list){
             $groupAccess = [];
             if(isset($params["id"]) && !empty($params["id"])){

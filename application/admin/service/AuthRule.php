@@ -61,7 +61,7 @@ class AuthRule extends AuthRuleModel {
     }
 
     public function getById($id){
-        $data=$this->field("id,name,title,icon,type,status,condition,create_time,update_time")->find($id);
+        $data=$this->field("id,name,title,icon,type,status,condition,pid,create_time,update_time")->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="规则不存在";
@@ -73,7 +73,7 @@ class AuthRule extends AuthRuleModel {
     }
 
     public function del($id){
-        $data=$this->field("id,name,title,icon,type,status,condition,create_time,update_time")->find($id);
+        $data=$this->field("id,name,title,icon,type,status,condition,pid,create_time,update_time")->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="规则不存在";
@@ -139,7 +139,7 @@ class AuthRule extends AuthRuleModel {
         array_map(function ($value) use (&$where,$params){
             if(isset($params[$value]) && !empty($params[$value])) $where[$value]=$params[$value];
         },
-            ["type","status"]
+            ["type","status","pid"]
         );
         if(!isset($params["begin_time"])) $params["begin_time"]="";
         if(!isset($params["end_time"])) $params["end_time"]="";
@@ -157,7 +157,7 @@ class AuthRule extends AuthRuleModel {
                 $order="{$params["field"]} {$params["order"]}";
             }
         }
-        $list=$this->field("id,name,title,icon,type,status,condition,create_time,update_time")->where($where)->page($params["page"],$params["limit"])->order($order)->select();
+        $list=$this->field("id,name,title,icon,type,status,condition,pid,create_time,update_time")->where($where)->page($params["page"],$params["limit"])->order($order)->select();
         $this->result["count"]=$this->where($where)->Count();
         unset($params,$where);
         if(empty($list)){
@@ -179,7 +179,7 @@ class AuthRule extends AuthRuleModel {
      * bool型json会转成0,1，zTree识别不出来，所以要加引号
      */
     public function getAll($params){
-        $list=$this->order("id asc")->column("id,name,title,icon,type,status,condition,pid","id");
+        $list=$this->order("id asc")->column("name,title,icon,type,status,condition,pid","id");
         if(!empty($list)){
             $rules=[];
             if(isset($params["group_id"]) && !empty($params["group_id"])){
@@ -204,6 +204,40 @@ class AuthRule extends AuthRuleModel {
             unset($key,$value,$rules);
         }
         return array_values($list);
+    }
+
+    /**
+     * 菜单增加修改时选择上级菜单
+     * @param
+     */
+    public function getRuleList($pid=0,$prefix="|—",$ptitle=false,$level=0){
+
+        $field = "name,title,icon,type,status,condition,pid";
+        if($ptitle&&!is_array($ptitle)){
+            $ptitle = $this->column("title","id");
+        }
+        if($ptitle) $field .= ",create_time,update_time";
+        $level++;
+        $list=$this->where(["pid"=>$pid])->order("id asc")->column($field,"id");
+        unset($field);
+        $result=[];
+        if(!empty($list)){
+            foreach ($list as $key=>$value){
+                $value["title"] = $prefix.$value["title"];
+                if(isset($value["create_time"])&&!empty($value["create_time"])) $value["create_time"]=date("Y-m-d H:i:s",$value["create_time"]);
+                if(isset($value["update_time"])&&!empty($value["update_time"])) $value["update_time"]=date("Y-m-d H:i:s",$value["update_time"]);
+                $value["level"] = $level;
+                if($ptitle){
+                    $value["ptitle"]=empty($value["pid"])?"<font color='red'>顶级菜单</font>":(isset($ptitle[$value["pid"]])?$ptitle[$value["pid"]]:"ERROR");
+                }
+                $result[] = $value;
+                $temp = $this->getRuleList($value["id"],$prefix." —",$ptitle,$level);
+                if(!empty($temp)) $result = array_merge($result,$temp);
+                unset($temp);
+            }
+        }
+        unset($ptitle);
+        return $result;
     }
 
 }

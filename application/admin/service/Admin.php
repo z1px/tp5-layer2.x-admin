@@ -245,7 +245,7 @@ class Admin extends AdminModel {
 
 
     public function getAll(){
-        $list=$this->order("id asc")->column("id,username,true_name,email,mobile,status","id");
+        $list=$this->order("id asc")->column("username,true_name,email,mobile,status","id");
         return array_values($list);
     }
 
