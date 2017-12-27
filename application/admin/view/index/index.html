@@ -126,10 +126,11 @@
             $('#myinfo,#mylogo').on('click', function () {
                 var top_index = layer.open({
                     type: 2,//0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
-                    title: '基本资料',
-                    area : ['520px','600px'],//宽高
+                    // title: '基本资料',
+                    title: false,
+                    area : ['520px','555px'],//宽高
                     content: "{:Url('admin/Account/myinfo')}",
-                    maxmin: true, //最大最小化
+                    maxmin: false, //最大最小化
                     btn: ["修改","重置","取消"],
                     btnAlign: 'c', // 按钮排列
                     shade: 0.3, //遮罩
