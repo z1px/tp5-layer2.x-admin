@@ -55,6 +55,12 @@ class AuthRule extends Model {
         2=>"禁用",
     ];
 
+    //菜单状态
+    public $list_menu=[
+        1=>"展示",
+        2=>"不展示",
+    ];
+
     protected function getStatusNameAttr($value,$data) {
         if(!isset($data["status"])) return "未知状态";
         return isset($this->list_status[$data["status"]])?$this->list_status[$data["status"]]:"未知状态";
@@ -63,6 +69,11 @@ class AuthRule extends Model {
     protected function getTypeNameAttr($value,$data) {
         if(!isset($data["type"])) return "未知类型";
         return isset($this->list_type[$data["type"]])?$this->list_type[$data["type"]]:"未知类型";
+    }
+
+    protected function getMenuNameAttr($value,$data) {
+        if(!isset($data["menu"])) return "未知类型";
+        return isset($this->list_menu[$data["menu"]])?$this->list_menu[$data["menu"]]:"未知类型";
     }
 
 }

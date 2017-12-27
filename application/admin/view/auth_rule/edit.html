@@ -51,6 +51,14 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">菜单状态</label>
+        <div class="layui-input-inline">
+            {volist name="list_menu" id="vo"}
+            <input type="radio" name="menu" value="{$key}" title="{$vo}" {eq name="data.menu" value="$key"}checked{/eq}>
+            {/volist}
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">规则表达式</label>
         <div class="layui-input-block">
             <textarea name="condition" placeholder="请输入规则表达式，如定义{score}>5  and {score}<100  表示用户的分数在5-100之间时这条规则才会通过" class="layui-textarea">{$data.condition}</textarea>

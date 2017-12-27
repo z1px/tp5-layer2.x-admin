@@ -21,27 +21,14 @@
             <div class="kit-search-body">
                 <div class="layui-form-item">
                     <div class="layui-inline">
-                        <label class="layui-form-label">规则唯一标识</label>
+                        <label class="layui-form-label">菜单状态</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="name" placeholder="请输入规则唯一标识" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">规则名称</label>
-                        <div class="layui-input-inline">
-                            <input type="text" name="title" placeholder="请输入规则名称" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">创建时间</label>
-                        <div class="layui-input-inline" style="width: 120px;">
-                            <input type="text" name="begin_time" placeholder="开始时间" autocomplete="off" class="layui-input">
-                        </div>
-                        <div class="layui-form-mid">-</div>
-                        <div class="layui-input-inline" style="width: 120px;">
-                            <input type="text" name="end_time" placeholder="结束时间" autocomplete="off" class="layui-input">
+                            <select name="menu" lay-filter="">
+                                <option value=""></option>
+                                {volist name="list_menu" id="vo"}
+                                <option value="{$key}">{$vo}</option>
+                                {/volist}
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -64,6 +51,9 @@
         </script>
         <script type="text/html" id="switchTpl">
             <input type="checkbox" name="status" {{#  if(d.status == 1){ }}checked{{#  } }} lay-skin="switch" lay-text="正常|禁用" lay-filter="switch_status" data-id="{{d.id}}">
+        </script>
+        <script type="text/html" id="switchMenuTpl">
+            <input type="checkbox" name="menu" {{#  if(d.menu == 1){ }}checked{{#  } }} lay-skin="switch" lay-text="展示|禁用" lay-filter="switch_menu" data-id="{{d.id}}">
         </script>
         <script type="text/html" id="barDemo">
             <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="add_pid">添加</a>
@@ -88,6 +78,7 @@
                 url:"{:Url('admin/AuthRule/table')}",
                 url_del:"{:Url('admin/AuthRule/del')}",
                 url_switch:"{:Url('admin/AuthRule/editStatus')}",
+                url_switch_menu:"{:Url('admin/AuthRule/editMenu')}",
                 cols: [
                     [{
                         field: 'id',
@@ -100,10 +91,12 @@
                         title: '父ID'
                     }, {
                         field: 'ptitle',
-                        title: '父规则名称'
+                        title: '父规则名称',
+                        width: 120
                     }, {
                         field: 'title',
-                        title: '规则中文名称'
+                        title: '规则中文名称',
+                        width: 240
                     }, {
                         field: 'name',
                         title: '规则唯一标识',
@@ -122,16 +115,22 @@
                         templet: '#switchTpl',
                         align: 'center'
                     }, {
+                        field: 'menu_name',
+                        title: '菜单状态',
+                        sort: true,
+                        templet: '#switchMenuTpl',
+                        align: 'center'
+                    }, {
                         field: 'condition',
                         title: '规则表达式',
                         edit:'text'
-                    }, {
+                    }, /*{
                         field: 'create_time',
                         title: '创建时间'
                     }, {
                         field: 'update_time',
                         title: '创建时间'
-                    }, {
+                    }, */{
                         fixed: 'right',
                         title: '操作',
                         width: 180,
@@ -141,7 +140,7 @@
                 ]
             },
             open:{
-                area:['480px', '520px'],
+                area:['480px', '630px'],
                 "edit":{
                     title: "修改",
                     url:"{:Url('admin/AuthRule/edit')}"

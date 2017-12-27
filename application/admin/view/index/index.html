@@ -124,47 +124,106 @@
                 }();
 
             $('#myinfo,#mylogo').on('click', function () {
-                layer.open({
+                var top_index = layer.open({
                     type: 2,//0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
                     title: '基本资料',
-                    maxmin: true, //最大最小化
-                    area : ['520px','590px'],//宽高
+                    area : ['520px','600px'],//宽高
                     content: "{:Url('admin/Account/myinfo')}",
+                    maxmin: true, //最大最小化
+                    btn: ["修改","重置","取消"],
+                    btnAlign: 'c', // 按钮排列
+                    shade: 0.3, //遮罩
+                    id : 'demo', //用于控制弹层唯一标识
+                    yes: function(index, layero) {
+                        var body = layer.getChildFrame('body', index);
+                        // var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                        // console.log(body.html()); //得到iframe页的body内容
+                        var form_field = body.find('form[lay-filter=myinfo]').serializeArray();
+                        var field={};
+                        if(form_field){
+                            $.each(form_field,function (i,v){
+                                field[v.name]=v.value;
+                            })
+                        }
+                        var ind_load=layer.load(2);
+                        $.ajax({
+                            type:"post",
+                            url:"{:Url('admin/Account/myinfo')}",
+                            data:field,
+                            timeout : 5000, //超时时间设置，单位毫秒
+                            dataType:"json",
+                            async: true, // 异步加载
+                            beforeSend:function(){
+
+                            },success:function(result){
+                                layer.close(ind_load);
+                                layer.msg(result.msg,{time: 2000});
+                                if(result.code==1){
+                                    layer.close(index); //关闭弹出层
+                                    window.top.location.reload();
+                                }
+                            },complete:function(XMLHttpRequest){
+                                if(XMLHttpRequest.statusText=="timeout"){
+                                    layer.close(ind_load);
+                                    layer.msg("请求超时...");
+                                }
+                            },error:function(){
+                                layer.close(ind_load);
+                                layer.msg("请求错误");
+                            }
+                        });
+                        return false;
+                    },
+                    btn2: function(index, layero) {
+                        var body = layer.getChildFrame('body', index);
+                        body.find('form[lay-filter=myinfo]').find('button[type=reset]').click();
+                        return false;
+                    },
                     resizing:function(layero){ //拉伸时修改高度
                         // 提交按钮在 iframe层 里面时，必须加这一句，要不然拉伸的时候会变形
                         layero.find("iframe").height(layero.height()-layero.find(".layui-layer-title").height());
                     }
                 });
+                var device = layui.device();//获取设备信息
+                // 如果是手机浏览器，则最大化
+                if(device.android||device.ios||device.weixin) layer.full(top_index);//弹出即最大化
             });
 
             $("#logout").on('click', function () {
-                var ind_load=layer.load(2);
-                $.ajax({
-                    type:"get",
-                    url:"{:Url('admin/Index/logout')}",
-                    data:{},
-                    timeout : 5000, //超时时间设置，单位毫秒
-                    dataType:"json",
-                    async: true, // 异步加载
-                    beforeSend:function(){
+                layer.confirm('您确定要注销？', {
+                    btn: ['确定','取消'], //按钮
+                    btnAlign: 'c', //按钮排列顺序
+                    closeBtn: 0, //不显示右上角关闭按钮
+                    title: "提示" //标题
+                }, function(){
+                    var ind_load=layer.load(2);
+                    $.ajax({
+                        type:"get",
+                        url:"{:Url('admin/Index/logout')}",
+                        data:{},
+                        timeout : 5000, //超时时间设置，单位毫秒
+                        dataType:"json",
+                        async: true, // 异步加载
+                        beforeSend:function(){
 
-                    },success:function(result){
-                        layer.close(ind_load);
-                        layer.alert(result.msg,{closeBtn:0},function () {
-                            if(result.code==1){
-                                window.top.location.href=result.url;
-                            }
-                        });
-                        return false;
-                    },complete:function(XMLHttpRequest){
-                        if(XMLHttpRequest.statusText=="timeout"){
+                        },success:function(result){
                             layer.close(ind_load);
-                            layer.msg("请求超时...");
+                            layer.alert(result.msg,{closeBtn:0},function () {
+                                if(result.code==1){
+                                    window.top.location.href=result.url;
+                                }
+                            });
+                            return false;
+                        },complete:function(XMLHttpRequest){
+                            if(XMLHttpRequest.statusText=="timeout"){
+                                layer.close(ind_load);
+                                layer.msg("请求超时...");
+                            }
+                        },error:function(){
+                            layer.close(ind_load);
+                            layer.msg("请求错误");
                         }
-                    },error:function(){
-                        layer.close(ind_load);
-                        layer.msg("请求错误");
-                    }
+                    });
                 });
             })
         });

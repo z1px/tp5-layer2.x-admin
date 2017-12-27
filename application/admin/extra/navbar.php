@@ -89,4 +89,48 @@ return [
             ]
         ],
     ],
+    3=>[
+        [
+            "id" => "30100",
+            "title" => "常用地址",
+            "icon" => "fa-book",
+            "spread" => true,
+            "children" => [
+                [
+                    "id" => "30101",
+                    "title" => "Font图标",
+                    "icon" => "fa-flag",
+                    "url" => 'http://fontawesome.dashgame.com'
+                ],
+                [
+                    "id" => "30102",
+                    "title" => "LayUI文档",
+                    "icon" => "&#xe62e;",
+                    "url" => 'http://www.layui.com/doc/'
+                ],
+                [
+                    "id" => "30103",
+                    "title" => "ThinkPHP5文档",
+                    "icon" => "fa-file-text-o",
+                    "url" => 'https://www.kancloud.cn/manual/thinkphp5/118003'
+                ],
+            ]
+        ],
+    ],
+    4=>[
+        [
+            "id" => "40100",
+            "title" => "测试方法",
+            "icon" => "fa-tags",
+            "spread" => true,
+            "children" => [
+                [
+                    "id" => "40101",
+                    "title" => "redis测试",
+                    "icon" => "fa-leaf",
+                    "url" =>  Url::build('admin/Test/index')
+                ],
+            ]
+        ],
+    ],
 ];

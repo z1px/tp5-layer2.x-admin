@@ -721,6 +721,44 @@ layui.define(['table','form','laytpl','laydate','layer','code','ztree'], functio
 
             });
 
+            // 监听开关状态切换
+            form.on('switch(switch_menu)', function(data){
+                // console.log(data.elem); //得到checkbox原始DOM对象
+                // console.log(data.elem.checked); //开关是否开启，true或者false
+                // console.log(data.value); //开关value值，也可以通过data.elem.value得到
+                // console.log(data.othis); //得到美化后的DOM对象
+                var id = $(this).data("id");
+                var menu = data.elem.checked ? 1:2;
+
+                var ind_load=layerTips.load(2);
+                $.ajax({
+                    type:"post",
+                    url:_config.table.url_switch_menu,
+                    data:{id:id,menu:menu},
+                    timeout : 5000, //超时时间设置，单位毫秒
+                    dataType:"json",
+                    async: true, // 异步加载
+                    beforeSend:function(){
+
+                    },success:function(result){
+                        layerTips.close(ind_load);
+                        layerTips.msg(result.msg,{time: 2000});
+                        if(result.code!=1){
+                            tableIns.reload(); // 如果修改失败则刷新列表
+                        }
+                    },complete:function(XMLHttpRequest){
+                        if(XMLHttpRequest.statusText=="timeout"){
+                            layerTips.close(ind_load);
+                            layerTips.msg("请求超时...");
+                        }
+                    },error:function(){
+                        layerTips.close(ind_load);
+                        layerTips.msg("请求错误");
+                    }
+                });
+
+            });
+
             $('.kit-search-btns').children('a').off('click').on('click', function() {
                 var $that = $(this),
                     action = $that.data('action');

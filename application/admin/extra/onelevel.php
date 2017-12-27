@@ -16,5 +16,13 @@ return [
         "title"=>"系统设置",
         "icon"=>"fa-cog",
         "id"=>"2"
+    ], [
+        "title"=>"地址库",
+        "icon"=>"fa-bookmark-o",
+        "id"=>"3"
+    ], [
+        "title"=>"测试",
+        "icon"=>"fa-bug",
+        "id"=>"4"
     ]
 ];

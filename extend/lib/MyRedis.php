@@ -32,7 +32,6 @@ class MyRedis {
         'select'       => 0, // 操作库
         'timeout'      => 180, // 超时时间(秒)
         'persistent'   => true, // 是否长连接
-        'expire'       => 3600, // 有效期(秒)
     ];
 
     /**

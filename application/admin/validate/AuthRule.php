@@ -22,6 +22,7 @@ class AuthRule extends Validate {
         'type'=>'require|number',
         'condition'=>'',
         'status'=>'in:1,2',
+        'menu'=>'in:1,2',
     ];
 
     // 错误提示
@@ -31,9 +32,10 @@ class AuthRule extends Validate {
 
     // 验证场景
     protected $scene = [
-        'add'=>['name','title','icon','type','condition','status'],
-        'edit'=>['id','name','title','icon','type','condition','status'],
+        'add'=>['name','title','icon','type','condition','status','menu'],
+        'edit'=>['id','name','title','icon','type','condition','status','menu'],
         'edit_status'=>['id','status'],
+        'edit_menu'=>['id','menu'],
     ];
 
 }

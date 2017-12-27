@@ -29,7 +29,7 @@ class AuthRule extends Common {
             $this->result["list"]=$this->authRule->getRuleList(0,"|—",true);
             return $this->_result();
         }else{
-            return $this->_fetch(["list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status]);
+            return $this->_fetch(["list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status,"list_menu"=>$this->authRule->list_menu]);
         }
     }
 
@@ -42,7 +42,7 @@ class AuthRule extends Common {
             $this->result=$this->authRule->add($this->params);
             return $this->_result();
         }else{
-            return $this->_fetch(["list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status,"list_rule"=>$this->authRule->getRuleList(),"pid"=>isset($this->params["pid"])?$this->params["pid"]:""]);
+            return $this->_fetch(["list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status,"list_menu"=>$this->authRule->list_menu,"list_rule"=>$this->authRule->getRuleList(),"pid"=>isset($this->params["pid"])?$this->params["pid"]:""]);
         }
     }
 
@@ -63,7 +63,7 @@ class AuthRule extends Common {
             $this->result=$this->authRule->getById($this->params["id"]);
             if($this->result["code"]==0) return $this->_jump();
             $this->result["list_status"] = $this->authRule->list_status;
-            return $this->_fetch(["data"=>$this->result["data"],"list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status,"list_rule"=>$this->authRule->getRuleList(),"pid"=>isset($this->params["pid"])?$this->params["pid"]:""]);
+            return $this->_fetch(["data"=>$this->result["data"],"list_type"=>$this->authRule->list_type,"list_status"=>$this->authRule->list_status,"list_menu"=>$this->authRule->list_menu,"list_rule"=>$this->authRule->getRuleList(),"pid"=>isset($this->params["pid"])?$this->params["pid"]:""]);
         }
     }
 
@@ -72,6 +72,14 @@ class AuthRule extends Common {
      */
     public function editStatus(){
         $this->result=$this->authRule->editStatus($this->params);
+        return $this->_result();
+    }
+
+    /**
+     * 修改菜单状态
+     */
+    public function editMenu(){
+        $this->result=$this->authRule->editMenu($this->params);
         return $this->_result();
     }
 

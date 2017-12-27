@@ -10,7 +10,7 @@ namespace app\admin\service;
 
 
 use \app\admin\model\AuthGroup as AuthGroupModel;
-use app\admin\model\AuthGroupAccount;
+use app\admin\model\AuthGroupAccess;
 use think\Loader;
 
 class AuthGroup extends AuthGroupModel {
@@ -187,7 +187,7 @@ class AuthGroup extends AuthGroupModel {
         if(isset($params["group_id"]) && !empty($params["group_id"])){
             $group_ids=is_array($params["group_id"])?array_keys($params["group_id"]):[$params["group_id"]];
         }
-        $authGroupAccess = new AuthGroupAccount();
+        $authGroupAccess = new AuthGroupAccess();
         if($group_ids){
             $authGroupAccess->where(["uid"=>$uid,"group_id"=>["not in",$group_ids]])->delete();
             $group_ids_in = $authGroupAccess->where(["uid"=>$uid])->column("group_id","id");
@@ -223,7 +223,7 @@ class AuthGroup extends AuthGroupModel {
         if($list){
             $groupAccess = [];
             if(isset($params["id"]) && !empty($params["id"])){
-                $authGroupAccess = new AuthGroupAccount();
+                $authGroupAccess = new AuthGroupAccess();
                 $groupAccess = $authGroupAccess->where(["uid"=>$params["id"]])->column("group_id","id");
                 unset($authGroupAccess);
             }

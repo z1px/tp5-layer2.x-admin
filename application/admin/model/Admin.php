@@ -85,4 +85,15 @@ class Admin extends Model {
         return isset($this->list_status[$data["status"]])?$this->list_status[$data["status"]]:"未知状态";
     }
 
+    protected function getGroupNameAttr($value,$data) {
+        if(!isset($data["id"])) return "";
+        $authGroup = new AuthGroup();
+        $authGroupAccess = new AuthGroupAccess();
+        $group_ids=$authGroupAccess->where(["uid"=>$data["id"]])->column("group_id","id");
+        if(empty($group_ids)) return "";
+        $group_names=$authGroup->where(["id"=>["in",$group_ids]])->column("title","id");
+        unset($authGroup,$authGroupAccess,$group_ids);
+        return implode("|",$group_names);
+    }
+
 }

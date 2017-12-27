@@ -2,120 +2,41 @@
 Navicat MySQL Data Transfer
 
 Source Server         : localhost
-Source Server Version : 50624
+Source Server Version : 100122
 Source Host           : localhost:3306
 Source Database       : python_tj
 
 Target Server Type    : MYSQL
-Target Server Version : 50624
+Target Server Version : 100122
 File Encoding         : 65001
 
-Date: 2017-12-26 19:07:52
+Date: 2017-12-27 23:39:19
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for tp5_admin
+-- Table structure for tp5_login_log
 -- ----------------------------
-DROP TABLE IF EXISTS `tp5_admin`;
-CREATE TABLE `tp5_admin` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `username` varchar(30) NOT NULL COMMENT '账号',
-  `true_name` varchar(30) DEFAULT NULL COMMENT '真实姓名',
-  `email` varchar(50) DEFAULT NULL COMMENT '邮箱号',
-  `mobile` varchar(20) DEFAULT NULL COMMENT '手机号',
-  `password` varchar(50) NOT NULL COMMENT '密码',
-  `img` varchar(200) DEFAULT NULL COMMENT '管理员头像',
-  `status` tinyint(2) DEFAULT '1' COMMENT '账号状态：1-正常，2-禁用',
-  `last_login_time` int(11) DEFAULT NULL COMMENT '最后一次登录时间',
+DROP TABLE IF EXISTS `tp5_login_log`;
+CREATE TABLE `tp5_login_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `admin_id` int(11) DEFAULT NULL COMMENT '后台管理员ID',
+  `username` varchar(30) DEFAULT NULL COMMENT '账号',
+  `account` varchar(255) DEFAULT NULL COMMENT '账号信息',
   `ip` varchar(30) DEFAULT NULL COMMENT '当前IP',
   `area` varchar(50) DEFAULT NULL COMMENT 'IP区域',
   `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
-  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
-  `login_key` varchar(50) DEFAULT NULL COMMENT '登陆成功标记',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uni_tp5_admin_username` (`username`),
-  UNIQUE KEY `uni_tp5_admin_email` (`email`),
-  UNIQUE KEY `uni_tp5_admin_mobile` (`mobile`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='后台用户表';
-
--- ----------------------------
--- Records of tp5_admin
--- ----------------------------
-INSERT INTO `tp5_admin` VALUES ('1', 'sky001', '系统管理员1', null, null, 'MDAwMDAwMDAwMDU1NzQ4NTJiYjU2MTlmMjlza3kxMjM', '/uploads/images/20171226/622762d0f703918fc7b7cdc2533d269759eec450.jpg', '1', '1514248878', '127.0.0.1', '', '1500016980', '1514283541', '8936572d410bb0fa87ab83b0863a2b89');
-INSERT INTO `tp5_admin` VALUES ('2', 'sky002', '11', null, null, 'MDAwMDAwMDAwMDU1NzQ4NTJiYjU2MTlmMjlza3kxMjM', null, '1', '1970', '127.0.0.1', '', '1514283560', '1514283599', null);
-
--- ----------------------------
--- Table structure for tp5_auth_group
--- ----------------------------
-DROP TABLE IF EXISTS `tp5_auth_group`;
-CREATE TABLE `tp5_auth_group` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `title` varchar(100) NOT NULL DEFAULT '' COMMENT '用户组中文名称',
-  `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '状态：为1正常，为2禁用',
-  `rules` varchar(80) NOT NULL DEFAULT '' COMMENT '用户组拥有的规则id， 多个规则","隔开',
-  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
-  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COMMENT='用户组表';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='后台账号登录日志';
 
 -- ----------------------------
--- Records of tp5_auth_group
+-- Records of tp5_login_log
 -- ----------------------------
-INSERT INTO `tp5_auth_group` VALUES ('1', '超级管理员', '1', '1,2', '1514270273', '1514278093');
-INSERT INTO `tp5_auth_group` VALUES ('2', '管理员', '1', '2', '1514278007', '1514278007');
-INSERT INTO `tp5_auth_group` VALUES ('3', '测试', '2', '1', '1514278016', '1514278394');
-INSERT INTO `tp5_auth_group` VALUES ('4', '开发', '1', '1', '1514278036', '1514278036');
-INSERT INTO `tp5_auth_group` VALUES ('5', '商务', '2', '2', '1514278055', '1514278396');
-INSERT INTO `tp5_auth_group` VALUES ('6', '财务', '2', '1', '1514278078', '1514278397');
-
--- ----------------------------
--- Table structure for tp5_auth_group_access
--- ----------------------------
-DROP TABLE IF EXISTS `tp5_auth_group_access`;
-CREATE TABLE `tp5_auth_group_access` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `uid` int(11) unsigned NOT NULL COMMENT '用户id',
-  `group_id` int(11) unsigned NOT NULL COMMENT '用户组id',
-  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
-  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uni_auth_group_access_uid_groupid` (`uid`,`group_id`) USING BTREE,
-  KEY `ind_auth_group_access_uid` (`uid`) USING BTREE,
-  KEY `ind_auth_group_access_groupid` (`group_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COMMENT='用户组明细表';
-
--- ----------------------------
--- Records of tp5_auth_group_access
--- ----------------------------
-INSERT INTO `tp5_auth_group_access` VALUES ('10', '1', '2', '1514283541', '1514283541');
-INSERT INTO `tp5_auth_group_access` VALUES ('11', '2', '4', '1514283560', '1514283560');
-
--- ----------------------------
--- Table structure for tp5_auth_rule
--- ----------------------------
-DROP TABLE IF EXISTS `tp5_auth_rule`;
-CREATE TABLE `tp5_auth_rule` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(80) NOT NULL DEFAULT '' COMMENT '规则唯一标识',
-  `title` varchar(20) NOT NULL DEFAULT '' COMMENT '规则中文名称',
-  `icon` varchar(30) DEFAULT NULL COMMENT '图标，支持layui和fa-',
-  `type` tinyint(2) NOT NULL DEFAULT '1' COMMENT 'type为1， condition字段就可以定义规则表达式',
-  `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '状态：为1正常，为2禁用',
-  `condition` varchar(100) DEFAULT '' COMMENT '规则表达式，为空表示存在就验证，不为空表示按照条件验证',
-  `pid` int(11) NOT NULL DEFAULT '0' COMMENT '父ID',
-  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
-  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uni_auth_rule_name` (`name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='规则表';
-
--- ----------------------------
--- Records of tp5_auth_rule
--- ----------------------------
-INSERT INTO `tp5_auth_rule` VALUES ('1', 'admin/Menu/default', '基本菜单', 'fa-book', '1', '1', null, '0', '1514250467', '1514286300');
-INSERT INTO `tp5_auth_rule` VALUES ('2', 'admin/Setting/default', '系统设置', '', '1', '1', null, '0', '1514250841', '1514286303');
+INSERT INTO `tp5_login_log` VALUES ('1', '1', 'sky001', '{\"id\":1,\"username\":\"sky001\",\"true_name\":\"\\u7cfb\\u7edf\\u7ba1\\u7406\\u5458\",\"mobile\":null,\"email\":null}', '127.0.0.1', '', '1514248878', null);
+INSERT INTO `tp5_login_log` VALUES ('2', '1', 'sky001', '{\"id\":1,\"username\":\"sky001\",\"true_name\":\"\\u7cfb\\u7edf\\u7ba1\\u7406\\u54581\",\"mobile\":null,\"email\":null}', '127.0.0.1', '', '1514296136', null);
+INSERT INTO `tp5_login_log` VALUES ('3', '2', 'sky002', '{\"id\":2,\"username\":\"sky002\",\"true_name\":\"11\",\"mobile\":null,\"email\":null}', '127.0.0.1', '', '1514307829', null);
 
 -- ----------------------------
 -- Table structure for tp5_behavior_log
@@ -138,7 +59,7 @@ CREATE TABLE `tp5_behavior_log` (
   `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COMMENT='后台用户行为记录';
+) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8mb4 COMMENT='后台用户行为记录';
 
 -- ----------------------------
 -- Records of tp5_behavior_log
@@ -244,24 +165,166 @@ INSERT INTO `tp5_behavior_log` VALUES ('98', '修改规则信息', 'admin', 'Aut
 INSERT INTO `tp5_behavior_log` VALUES ('99', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"\\u57fa\\u672c\\u83dc\\u5355\",\"name\":\"admin\\/Menu\\/default\",\"icon\":\"fa-book\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"id\":\"1\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514285786', null);
 INSERT INTO `tp5_behavior_log` VALUES ('100', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"\\u57fa\\u672c\\u83dc\\u5355\",\"name\":\"admin\\/Menu\\/default\",\"icon\":\"fa-book\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"id\":\"1\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514286300', null);
 INSERT INTO `tp5_behavior_log` VALUES ('101', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"\\u7cfb\\u7edf\\u8bbe\\u7f6e\",\"name\":\"admin\\/Setting\\/default\",\"icon\":\"\\ue62e\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"id\":\"2\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514286303', null);
+INSERT INTO `tp5_behavior_log` VALUES ('102', '修改用户组状态', 'admin', 'AuthGroup', 'editstatus', 'http://py.thinkphp5.com/auth_group/editstatus.html', 'post', '{\"id\":\"6\",\"status\":\"1\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514296708', null);
+INSERT INTO `tp5_behavior_log` VALUES ('103', '修改用户组状态', 'admin', 'AuthGroup', 'editstatus', 'http://py.thinkphp5.com/auth_group/editstatus.html', 'post', '{\"id\":\"6\",\"status\":\"2\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514296710', null);
+INSERT INTO `tp5_behavior_log` VALUES ('104', '图片上传', 'admin', 'Upload', 'img', 'http://py.thinkphp5.com/upload/img.html', 'post', '{\"upload\":\"file\"}', '{\"code\":\"0\",\"msg\":\"\\u56fe\\u7247\\u4e0a\\u4f20\\u6210\\u529f\",\"data\":{\"src\":\"\\/uploads\\/images\\/20171226\\/4bd11c939a11f85dfc0cd1409c321b4d.jpg\",\"title\":\"4bd11c939a11f85dfc0cd1409c321b4d.jpg\"}}', '127.0.0.1', '', '1', 'sky001', '1514296831', null);
+INSERT INTO `tp5_behavior_log` VALUES ('105', '修改个人信息', 'admin', 'Account', 'myinfo', 'http://py.thinkphp5.com/account/myinfo.html', 'post', '{\"username\":\"sky001\",\"true_name\":\"\\u7cfb\\u7edf\\u7ba1\\u7406\\u54581\",\"mobile\":\"\",\"email\":\"\",\"file\":\"\",\"img\":\"\\/uploads\\/images\\/20171226\\/4bd11c939a11f85dfc0cd1409c321b4d.jpg\",\"password\":\"\",\"check_password\":\"\",\"id\":\"1\"}', '{\"code\":1,\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514296837', null);
+INSERT INTO `tp5_behavior_log` VALUES ('106', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"ceshi\",\"pid\":\"1\",\"name\":\"111\",\"icon\":\"\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u65b0\\u589e\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514301800', null);
+INSERT INTO `tp5_behavior_log` VALUES ('107', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"11111\",\"pid\":\"2\",\"name\":\"111\",\"icon\":\"\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"0\",\"msg\":\"name\\u5df2\\u5b58\\u5728\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514301821', null);
+INSERT INTO `tp5_behavior_log` VALUES ('108', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"111112 \",\"pid\":\"2\",\"name\":\"111QQ\",\"icon\":\"\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u65b0\\u589e\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514301832', null);
+INSERT INTO `tp5_behavior_log` VALUES ('109', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"WWWW\",\"pid\":\"0\",\"name\":\"112DW\",\"icon\":\"\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u65b0\\u589e\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514301879', null);
+INSERT INTO `tp5_behavior_log` VALUES ('110', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"DWEDWE\",\"pid\":\"1\",\"name\":\"22DWE\",\"icon\":\"\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u65b0\\u589e\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514301892', null);
+INSERT INTO `tp5_behavior_log` VALUES ('111', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"\",\"pid\":\"3\",\"name\":\"qqq\",\"icon\":\"qqq\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"0\",\"msg\":\"title\\u4e0d\\u80fd\\u4e3a\\u7a7a\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514303164', null);
+INSERT INTO `tp5_behavior_log` VALUES ('112', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"qqqq\",\"pid\":\"3\",\"name\":\"qqq\",\"icon\":\"qqq\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u65b0\\u589e\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514303169', null);
+INSERT INTO `tp5_behavior_log` VALUES ('113', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"sdqwsqw\",\"pid\":\"7\",\"name\":\"sqwS\",\"icon\":\"\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"0\",\"msg\":\"icon\\u4e0d\\u80fd\\u4e3a\\u7a7a\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514303189', null);
+INSERT INTO `tp5_behavior_log` VALUES ('114', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"sdqwsqw\",\"pid\":\"7\",\"name\":\"sqwS\",\"icon\":\"SSS\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u65b0\\u589e\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514303193', null);
+INSERT INTO `tp5_behavior_log` VALUES ('115', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"XSAXSA\",\"pid\":\"7\",\"name\":\"XSA\",\"icon\":\"X\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u65b0\\u589e\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514303207', null);
+INSERT INTO `tp5_behavior_log` VALUES ('116', '修改规则状态', 'admin', 'AuthRule', 'editstatus', 'http://py.thinkphp5.com/auth_rule/editstatus.html', 'post', '{\"id\":\"6\",\"status\":\"2\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":{\"id\":\"6\",\"name\":\"22DWE\",\"title\":\"DWEDWE\",\"icon\":\"\",\"type\":\"1\",\"status\":\"2\",\"condition\":\"\",\"pid\":\"1\",\"create_time\":\"2017-12-26 23:24:51\",\"update_time\":\"2017-12-26 23:52:19\",\"type_name\":\"\\u5b9a\\u4e49\\u89c4\\u5219\\u8868\\u8fbe\\u5f0f\",\"status_name\":\"\\u7981\\u7528\"}}', '127.0.0.1', '', '1', 'sky001', '1514303539', null);
+INSERT INTO `tp5_behavior_log` VALUES ('117', '修改规则状态', 'admin', 'AuthRule', 'editstatus', 'http://py.thinkphp5.com/auth_rule/editstatus.html', 'post', '{\"id\":\"4\",\"status\":\"2\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":{\"id\":\"4\",\"name\":\"111QQ\",\"title\":\"111112\",\"icon\":\"\",\"type\":\"1\",\"status\":\"2\",\"condition\":\"\",\"pid\":\"2\",\"create_time\":\"2017-12-26 23:23:51\",\"update_time\":\"2017-12-26 23:52:22\",\"type_name\":\"\\u5b9a\\u4e49\\u89c4\\u5219\\u8868\\u8fbe\\u5f0f\",\"status_name\":\"\\u7981\\u7528\"}}', '127.0.0.1', '', '1', 'sky001', '1514303542', null);
+INSERT INTO `tp5_behavior_log` VALUES ('118', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"WWWW\",\"pid\":\"8\",\"name\":\"112DW\",\"icon\":\"\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"id\":\"5\",\"rules\":\"\"}', '{\"code\":\"0\",\"msg\":\"icon\\u4e0d\\u80fd\\u4e3a\\u7a7a\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514303564', null);
+INSERT INTO `tp5_behavior_log` VALUES ('119', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"WWWW\",\"pid\":\"8\",\"name\":\"112DW\",\"icon\":\"dd\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"id\":\"5\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514303568', null);
+INSERT INTO `tp5_behavior_log` VALUES ('120', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"qqqq\",\"pid\":\"0\",\"name\":\"qqq\",\"icon\":\"qqq\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"id\":\"7\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514304582', null);
+INSERT INTO `tp5_behavior_log` VALUES ('121', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"DWEDWE\",\"pid\":\"1\",\"name\":\"22DWE\",\"icon\":\"\",\"type\":\"1\",\"status\":\"2\",\"condition\":\"\",\"id\":\"6\",\"rules\":\"\"}', '{\"code\":\"0\",\"msg\":\"icon\\u4e0d\\u80fd\\u4e3a\\u7a7a\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514307241', null);
+INSERT INTO `tp5_behavior_log` VALUES ('122', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"DWEDWE\",\"pid\":\"1\",\"name\":\"22DWE\",\"icon\":\"qq\",\"type\":\"1\",\"status\":\"2\",\"condition\":\"\",\"id\":\"6\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514307247', null);
+INSERT INTO `tp5_behavior_log` VALUES ('123', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"\",\"pid\":\"\",\"name\":\"\",\"icon\":\"\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"0\",\"msg\":\"name\\u4e0d\\u80fd\\u4e3a\\u7a7a\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514307299', null);
+INSERT INTO `tp5_behavior_log` VALUES ('124', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"DWEDWE\",\"pid\":\"1\",\"name\":\"22DWE\",\"icon\":\"qq\",\"type\":\"1\",\"status\":\"2\",\"condition\":\"\",\"id\":\"6\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514307655', null);
+INSERT INTO `tp5_behavior_log` VALUES ('125', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"\\u662f\\u6211\\u7684\\u8bf7\\u95ee\",\"pid\":\"3\",\"name\":\"\\u8bf7\\u6c42\\u6743\",\"icon\":\"aa\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u65b0\\u589e\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514308011', null);
+INSERT INTO `tp5_behavior_log` VALUES ('126', '修改用户组信息', 'admin', 'AuthGroup', 'edit', 'http://py.thinkphp5.com/auth_group/edit.html', 'post', '{\"title\":\"\\u8d22\\u52a1\",\"status\":\"2\",\"id\":\"6\",\"rules\":\"1,3,10\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":{\"id\":\"6\",\"title\":\"\\u8d22\\u52a1\",\"status\":\"2\",\"rules\":\"1,3,10\",\"create_time\":\"2017-12-26 16:47:58\",\"update_time\":\"2017-12-27 01:11:39\",\"status_name\":\"\\u7981\\u7528\"}}', '127.0.0.1', '', '1', 'sky001', '1514308299', null);
+INSERT INTO `tp5_behavior_log` VALUES ('127', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"ceshi\",\"pid\":\"1\",\"name\":\"111\",\"icon\":\"\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"id\":\"3\"}', '{\"code\":\"0\",\"msg\":\"icon\\u4e0d\\u80fd\\u4e3a\\u7a7a\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514308413', null);
+INSERT INTO `tp5_behavior_log` VALUES ('128', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"ceshi\",\"pid\":\"1\",\"name\":\"111\",\"icon\":\"dd\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"id\":\"3\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514308418', null);
+INSERT INTO `tp5_behavior_log` VALUES ('129', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"\\u57fa\\u672c\\u83dc\\u5355\",\"pid\":\"0\",\"name\":\"admin\\/Menu\\/default\",\"icon\":\"fa-book\",\"type\":\"1\",\"status\":\"1\",\"condition\":\"\",\"id\":\"1\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514308428', null);
+INSERT INTO `tp5_behavior_log` VALUES ('130', '修改规则状态', 'admin', 'AuthRule', 'editstatus', 'http://py.thinkphp5.com/auth_rule/editstatus.html', 'post', '{\"id\":\"5\",\"status\":\"2\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":{\"id\":\"5\",\"name\":\"112DW\",\"title\":\"WWWW\",\"icon\":\"dd\",\"type\":\"1\",\"status\":\"2\",\"condition\":\"\",\"pid\":\"8\",\"create_time\":\"2017-12-26 23:24:39\",\"update_time\":\"2017-12-27 01:16:33\",\"type_name\":\"\\u5b9a\\u4e49\\u89c4\\u5219\\u8868\\u8fbe\\u5f0f\",\"status_name\":\"\\u7981\\u7528\"}}', '127.0.0.1', '', '1', 'sky001', '1514308593', null);
+INSERT INTO `tp5_behavior_log` VALUES ('131', '图片上传', 'admin', 'Upload', 'img', 'http://py.thinkphp5.com/upload/img.html', 'post', '{\"upload\":\"file\"}', '{\"code\":\"0\",\"msg\":\"\\u56fe\\u7247\\u4e0a\\u4f20\\u6210\\u529f\",\"data\":{\"src\":\"\\/uploads\\/images\\/20171227\\/1.jpg\",\"title\":\"1.jpg\"}}', '127.0.0.1', '', '1', 'sky001', '1514382393', null);
+INSERT INTO `tp5_behavior_log` VALUES ('132', '图片上传', 'admin', 'Upload', 'img', 'http://py.thinkphp5.com/upload/img.html', 'post', '{\"upload\":\"file\"}', '{\"code\":\"0\",\"msg\":\"\\u56fe\\u7247\\u4e0a\\u4f20\\u6210\\u529f\",\"data\":{\"src\":\"\\/uploads\\/images\\/20171227\\/1.jpg\",\"title\":\"1.jpg\"}}', '127.0.0.1', '', '1', 'sky001', '1514382461', null);
+INSERT INTO `tp5_behavior_log` VALUES ('133', '修改个人信息', 'admin', 'Account', 'myinfo', 'http://py.thinkphp5.com/account/myinfo.html', 'post', '{\"username\":\"sky001\",\"true_name\":\"\\u7cfb\\u7edf\\u7ba1\\u7406\\u5458\",\"mobile\":\"\",\"email\":\"\",\"img\":\"\\/uploads\\/images\\/20171227\\/1.jpg\",\"password\":\"\",\"check_password\":\"\",\"id\":\"1\"}', '{\"code\":1,\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514382468', null);
+INSERT INTO `tp5_behavior_log` VALUES ('134', '修改个人信息', 'admin', 'Account', 'myinfo', 'http://py.thinkphp5.com/account/myinfo.html', 'post', '{\"username\":\"sky001\",\"true_name\":\"\\u7cfb\\u7edf\\u7ba1\\u7406\\u5458\",\"mobile\":\"\",\"email\":\"\",\"img\":\"\\/uploads\\/images\\/20171227\\/1.jpg\",\"password\":\"\",\"check_password\":\"\",\"id\":\"1\"}', '{\"code\":1,\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514382604', null);
+INSERT INTO `tp5_behavior_log` VALUES ('135', '修改用户组状态', 'admin', 'AuthGroup', 'editstatus', 'http://py.thinkphp5.com/auth_group/editstatus.html', 'post', '{\"id\":\"4\",\"status\":\"2\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514382691', null);
+INSERT INTO `tp5_behavior_log` VALUES ('136', '修改用户组状态', 'admin', 'AuthGroup', 'editstatus', 'http://py.thinkphp5.com/auth_group/editstatus.html', 'post', '{\"id\":\"6\",\"status\":\"1\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514382693', null);
+INSERT INTO `tp5_behavior_log` VALUES ('137', '修改用户组状态', 'admin', 'AuthGroup', 'editstatus', 'http://py.thinkphp5.com/auth_group/editstatus.html', 'post', '{\"id\":\"3\",\"status\":\"1\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514382695', null);
+INSERT INTO `tp5_behavior_log` VALUES ('138', '修改规则状态', 'admin', 'AuthRule', 'editstatus', 'http://py.thinkphp5.com/auth_rule/editstatus.html', 'post', '{\"id\":\"1\",\"status\":\"2\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514385409', null);
+INSERT INTO `tp5_behavior_log` VALUES ('139', '修改规则状态', 'admin', 'AuthRule', 'editstatus', 'http://py.thinkphp5.com/auth_rule/editstatus.html', 'post', '{\"id\":\"1\",\"status\":\"2\"}', '{\"code\":\"0\",\"msg\":\"\\u4fee\\u6539\\u5931\\u8d25\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514385424', null);
+INSERT INTO `tp5_behavior_log` VALUES ('140', '修改用户组信息', 'admin', 'AuthGroup', 'edit', 'http://py.thinkphp5.com/auth_group/edit.html', 'post', '{\"title\":\"\\u8d85\\u7ea7\\u7ba1\\u7406\\u5458\",\"status\":\"1\",\"id\":\"1\",\"rules\":\"1,3,10,6,2,4,7,8,5,9\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":{\"id\":\"1\",\"title\":\"\\u8d85\\u7ea7\\u7ba1\\u7406\\u5458\",\"status\":\"1\",\"rules\":\"1,3,10,6,2,4,7,8,5,9\",\"create_time\":\"2017-12-26 14:37:53\",\"update_time\":\"2017-12-27 22:45:53\",\"status_name\":\"\\u6b63\\u5e38\"}}', '127.0.0.1', '', '1', 'sky001', '1514385954', null);
+INSERT INTO `tp5_behavior_log` VALUES ('141', '修改用户组信息', 'admin', 'AuthGroup', 'edit', 'http://py.thinkphp5.com/auth_group/edit.html', 'post', '{\"title\":\"\\u8d85\\u7ea7\\u7ba1\\u7406\\u5458\",\"status\":\"1\",\"id\":\"1\",\"rules\":\"2,4,7,8,5,9\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":{\"id\":\"1\",\"title\":\"\\u8d85\\u7ea7\\u7ba1\\u7406\\u5458\",\"status\":\"1\",\"rules\":\"2,4,7,8,5,9\",\"create_time\":\"2017-12-26 14:37:53\",\"update_time\":\"2017-12-27 22:46:03\",\"status_name\":\"\\u6b63\\u5e38\"}}', '127.0.0.1', '', '1', 'sky001', '1514385963', null);
+INSERT INTO `tp5_behavior_log` VALUES ('142', '修改用户组信息', 'admin', 'AuthGroup', 'edit', 'http://py.thinkphp5.com/auth_group/edit.html', 'post', '{\"title\":\"\\u7ba1\\u7406\\u5458\",\"status\":\"1\",\"id\":\"2\",\"rules\":\"1,3,10,6\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":{\"id\":\"2\",\"title\":\"\\u7ba1\\u7406\\u5458\",\"status\":\"1\",\"rules\":\"1,3,10,6\",\"create_time\":\"2017-12-26 16:46:47\",\"update_time\":\"2017-12-27 22:46:12\",\"status_name\":\"\\u6b63\\u5e38\"}}', '127.0.0.1', '', '1', 'sky001', '1514385972', null);
+INSERT INTO `tp5_behavior_log` VALUES ('143', '修改用户组信息', 'admin', 'AuthGroup', 'edit', 'http://py.thinkphp5.com/auth_group/edit.html', 'post', '{\"title\":\"\\u8d85\\u7ea7\\u7ba1\\u7406\\u5458\",\"status\":\"1\",\"id\":\"1\",\"rules\":\"7,8,5,9\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":{\"id\":\"1\",\"title\":\"\\u8d85\\u7ea7\\u7ba1\\u7406\\u5458\",\"status\":\"1\",\"rules\":\"7,8,5,9\",\"create_time\":\"2017-12-26 14:37:53\",\"update_time\":\"2017-12-27 22:46:23\",\"status_name\":\"\\u6b63\\u5e38\"}}', '127.0.0.1', '', '1', 'sky001', '1514385983', null);
+INSERT INTO `tp5_behavior_log` VALUES ('144', '修改用户组', 'admin', 'Account', 'editgroup', 'http://py.thinkphp5.com/account/editgroup.html', 'post', '{\"group_id\":{\"1\":\"on\",\"2\":\"on\"},\"id\":\"2\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514386063', null);
+INSERT INTO `tp5_behavior_log` VALUES ('145', '修改用户组', 'admin', 'Account', 'editgroup', 'http://py.thinkphp5.com/account/editgroup.html', 'post', '{\"group_id\":{\"1\":\"on\",\"2\":\"on\"},\"id\":\"1\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514386083', null);
+INSERT INTO `tp5_behavior_log` VALUES ('146', '修改用户组', 'admin', 'Account', 'editgroup', 'http://py.thinkphp5.com/account/editgroup.html', 'post', '{\"group_id\":{\"1\":\"on\",\"2\":\"on\",\"3\":\"on\"},\"id\":\"1\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514386093', null);
+INSERT INTO `tp5_behavior_log` VALUES ('147', '修改用户组', 'admin', 'Account', 'editgroup', 'http://py.thinkphp5.com/account/editgroup.html', 'post', '{\"group_id\":{\"1\":\"on\",\"2\":\"on\"},\"id\":\"1\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514386099', null);
+INSERT INTO `tp5_behavior_log` VALUES ('148', '修改用户组', 'admin', 'Account', 'editgroup', 'http://py.thinkphp5.com/account/editgroup.html', 'post', '{\"group_id\":{\"3\":\"on\"},\"id\":\"2\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514387391', null);
+INSERT INTO `tp5_behavior_log` VALUES ('149', '修改用户组', 'admin', 'Account', 'editgroup', 'http://py.thinkphp5.com/account/editgroup.html', 'post', '{\"group_id\":{\"1\":\"on\",\"2\":\"on\"},\"id\":\"1\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514387424', null);
+INSERT INTO `tp5_behavior_log` VALUES ('150', '添加规则', 'admin', 'AuthRule', 'add', 'http://py.thinkphp5.com/auth_rule/add.html', 'post', '{\"title\":\"\",\"pid\":\"2\",\"name\":\"\",\"icon\":\"\",\"type\":\"1\",\"status\":\"1\",\"menu\":\"2\",\"condition\":\"\",\"rules\":\"\"}', '{\"code\":\"0\",\"msg\":\"name\\u4e0d\\u80fd\\u4e3a\\u7a7a\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514387483', null);
+INSERT INTO `tp5_behavior_log` VALUES ('151', '修改规则信息', 'admin', 'AuthRule', 'edit', 'http://py.thinkphp5.com/auth_rule/edit.html', 'post', '{\"title\":\"\\u7cfb\\u7edf\\u8bbe\\u7f6e\",\"pid\":\"0\",\"name\":\"admin\\/Setting\\/default\",\"icon\":\"\\ue62e\",\"type\":\"1\",\"status\":\"1\",\"menu\":\"2\",\"condition\":\"\",\"id\":\"2\",\"rules\":\"\"}', '{\"code\":\"1\",\"msg\":\"\\u4fee\\u6539\\u6210\\u529f\",\"data\":[]}', '127.0.0.1', '', '1', 'sky001', '1514387494', null);
 
 -- ----------------------------
--- Table structure for tp5_login_log
+-- Table structure for tp5_auth_rule
 -- ----------------------------
-DROP TABLE IF EXISTS `tp5_login_log`;
-CREATE TABLE `tp5_login_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `admin_id` int(11) DEFAULT NULL COMMENT '后台管理员ID',
-  `username` varchar(30) DEFAULT NULL COMMENT '账号',
-  `account` varchar(255) DEFAULT NULL COMMENT '账号信息',
+DROP TABLE IF EXISTS `tp5_auth_rule`;
+CREATE TABLE `tp5_auth_rule` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(80) NOT NULL DEFAULT '' COMMENT '规则唯一标识',
+  `title` varchar(20) NOT NULL DEFAULT '' COMMENT '规则中文名称',
+  `icon` varchar(30) DEFAULT NULL COMMENT '图标，支持layui和fa-',
+  `type` tinyint(2) NOT NULL DEFAULT '1' COMMENT 'type为1， condition字段就可以定义规则表达式',
+  `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '状态：为1正常，为2禁用',
+  `menu` tinyint(2) NOT NULL DEFAULT '1' COMMENT '是否作为菜单展示，1-展示，2-不展示',
+  `condition` varchar(100) DEFAULT '' COMMENT '规则表达式，为空表示存在就验证，不为空表示按照条件验证',
+  `pid` int(11) NOT NULL DEFAULT '0' COMMENT '父ID',
+  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
+  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uni_auth_rule_name` (`name`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='规则表';
+
+-- ----------------------------
+-- Records of tp5_auth_rule
+-- ----------------------------
+INSERT INTO `tp5_auth_rule` VALUES ('1', 'admin/Menu/default', '基本菜单', 'fa-book', '1', '2', '1', null, '0', '1514250467', '1514385669');
+INSERT INTO `tp5_auth_rule` VALUES ('2', 'admin/Setting/default', '系统设置', '', '1', '1', '1', null, '0', '1514250841', '1514388174');
+INSERT INTO `tp5_auth_rule` VALUES ('3', '111', 'ceshi', 'dd', '1', '1', '2', null, '1', '1514301799', '1514387459');
+INSERT INTO `tp5_auth_rule` VALUES ('4', '111QQ', '111112', null, '1', '2', '1', null, '2', '1514301831', '1514303542');
+INSERT INTO `tp5_auth_rule` VALUES ('5', '112DW', 'WWWW', 'dd', '1', '2', '1', null, '8', '1514301879', '1514308593');
+INSERT INTO `tp5_auth_rule` VALUES ('6', '22DWE', 'DWEDWE', 'qq', '1', '2', '1', null, '1', '1514301891', '1514307655');
+INSERT INTO `tp5_auth_rule` VALUES ('7', 'qqq', 'qqqq', 'qqq', '1', '1', '1', null, '0', '1514303169', '1514304581');
+INSERT INTO `tp5_auth_rule` VALUES ('8', 'sqwS', 'sdqwsqw', 'SSS', '1', '1', '1', null, '7', '1514303193', '1514303193');
+INSERT INTO `tp5_auth_rule` VALUES ('9', 'XSA', 'XSAXSA', 'X', '1', '1', '1', null, '7', '1514303207', '1514303207');
+INSERT INTO `tp5_auth_rule` VALUES ('10', '请求权', '是我的请问', 'aa', '1', '1', '1', null, '3', '1514308011', '1514308011');
+
+-- ----------------------------
+-- Table structure for tp5_auth_group_access
+-- ----------------------------
+DROP TABLE IF EXISTS `tp5_auth_group_access`;
+CREATE TABLE `tp5_auth_group_access` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uid` int(11) unsigned NOT NULL COMMENT '用户id',
+  `group_id` int(11) unsigned NOT NULL COMMENT '用户组id',
+  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
+  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uni_auth_group_access_uid_groupid` (`uid`,`group_id`) USING BTREE,
+  KEY `ind_auth_group_access_uid` (`uid`) USING BTREE,
+  KEY `ind_auth_group_access_groupid` (`group_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COMMENT='用户组明细表';
+
+-- ----------------------------
+-- Records of tp5_auth_group_access
+-- ----------------------------
+INSERT INTO `tp5_auth_group_access` VALUES ('10', '1', '2', '1514283541', '1514283541');
+INSERT INTO `tp5_auth_group_access` VALUES ('14', '1', '1', '1514386083', '1514386083');
+INSERT INTO `tp5_auth_group_access` VALUES ('16', '2', '3', '1514387391', '1514387391');
+
+-- ----------------------------
+-- Table structure for tp5_auth_group
+-- ----------------------------
+DROP TABLE IF EXISTS `tp5_auth_group`;
+CREATE TABLE `tp5_auth_group` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `title` varchar(100) NOT NULL DEFAULT '' COMMENT '用户组中文名称',
+  `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '状态：为1正常，为2禁用',
+  `rules` varchar(80) NOT NULL DEFAULT '' COMMENT '用户组拥有的规则id， 多个规则","隔开',
+  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
+  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COMMENT='用户组表';
+
+-- ----------------------------
+-- Records of tp5_auth_group
+-- ----------------------------
+INSERT INTO `tp5_auth_group` VALUES ('1', '超级管理员', '1', '7,8,5,9', '1514270273', '1514385983');
+INSERT INTO `tp5_auth_group` VALUES ('2', '管理员', '1', '1,3,10,6', '1514278007', '1514385972');
+INSERT INTO `tp5_auth_group` VALUES ('3', '测试', '1', '1', '1514278016', '1514382695');
+INSERT INTO `tp5_auth_group` VALUES ('4', '开发', '2', '1', '1514278036', '1514382691');
+INSERT INTO `tp5_auth_group` VALUES ('5', '商务', '2', '2', '1514278055', '1514278396');
+INSERT INTO `tp5_auth_group` VALUES ('6', '财务', '1', '1,3,10', '1514278078', '1514382693');
+
+-- ----------------------------
+-- Table structure for tp5_admin
+-- ----------------------------
+DROP TABLE IF EXISTS `tp5_admin`;
+CREATE TABLE `tp5_admin` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `username` varchar(30) NOT NULL COMMENT '账号',
+  `true_name` varchar(30) DEFAULT NULL COMMENT '真实姓名',
+  `email` varchar(50) DEFAULT NULL COMMENT '邮箱号',
+  `mobile` varchar(20) DEFAULT NULL COMMENT '手机号',
+  `password` varchar(50) NOT NULL COMMENT '密码',
+  `img` varchar(200) DEFAULT NULL COMMENT '管理员头像',
+  `status` tinyint(2) DEFAULT '1' COMMENT '账号状态：1-正常，2-禁用',
+  `last_login_time` int(11) DEFAULT NULL COMMENT '最后一次登录时间',
   `ip` varchar(30) DEFAULT NULL COMMENT '当前IP',
   `area` varchar(50) DEFAULT NULL COMMENT 'IP区域',
   `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='后台账号登录日志';
+  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  `login_key` varchar(50) DEFAULT NULL COMMENT '登陆成功标记',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uni_tp5_admin_username` (`username`),
+  UNIQUE KEY `uni_tp5_admin_email` (`email`),
+  UNIQUE KEY `uni_tp5_admin_mobile` (`mobile`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='后台用户表';
 
 -- ----------------------------
--- Records of tp5_login_log
+-- Records of tp5_admin
 -- ----------------------------
-INSERT INTO `tp5_login_log` VALUES ('1', '1', 'sky001', '{\"id\":1,\"username\":\"sky001\",\"true_name\":\"\\u7cfb\\u7edf\\u7ba1\\u7406\\u5458\",\"mobile\":null,\"email\":null}', '127.0.0.1', '', '1514248878', null);
+INSERT INTO `tp5_admin` VALUES ('1', 'sky001', '系统管理员', null, null, 'MDAwMDAwMDAwMDU1NzQ4NTJiYjU2MTlmMjlza3kxMjM', '/uploads/images/20171227/1.jpg', '1', '1514296135', '127.0.0.1', '', '1500016980', '1514382604', 'b93f15442ed7f49171b658936893bfd6');
+INSERT INTO `tp5_admin` VALUES ('2', 'sky002', '11', null, null, 'MDAwMDAwMDAwMDU1NzQ4NTJiYjU2MTlmMjlza3kxMjM', null, '1', '1514307829', '127.0.0.1', '', '1514283560', '1514307829', 'ee3414b35f09b4983fe428acbb7de2ce');
+SET FOREIGN_KEY_CHECKS=1;

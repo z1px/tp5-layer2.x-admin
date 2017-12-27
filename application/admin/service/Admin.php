@@ -132,19 +132,19 @@ class Admin extends AdminModel {
     }
 
     public function getById($id){
-        $data=$this->field("id,username,true_name,mobile,email,status,create_time,last_login_time")->find($id);
+        $data=$this->field("id,username,true_name,mobile,email,img,status,create_time,last_login_time")->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="用户不存在";
         }else{
-            $this->result["data"]=$data->append(["status_name"])->toArray();
+            $this->result["data"]=$data->append(["status_name","group_name"])->toArray();
         }
         unset($data);
         return $this->result;
     }
 
     public function del($id){
-        $data=$this->field("id,username,true_name,mobile,email,status")->find($id);
+        $data=$this->field("id,username,true_name,mobile,email,img,status")->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="用户不存在";
@@ -226,7 +226,7 @@ class Admin extends AdminModel {
                 $order="{$params["field"]} {$params["order"]}";
             }
         }
-        $list=$this->field("id,username,true_name,mobile,email,status,create_time,last_login_time,ip,area")->where($where)->page($params["page"],$params["limit"])->order($order)->select();
+        $list=$this->field("id,username,true_name,mobile,email,img,status,create_time,last_login_time,ip,area")->where($where)->page($params["page"],$params["limit"])->order($order)->select();
         $this->result["count"]=$this->where($where)->Count();
         unset($params,$where);
         if(empty($list)){
@@ -234,7 +234,7 @@ class Admin extends AdminModel {
         }else{
             foreach ($list as $key=>$value){
                 $value->last_login_time=date("Y-m-d H:i:s",$value->last_login_time);
-                $list[$key]=$value->append(["status_name"])->toArray();
+                $list[$key]=$value->append(["status_name","group_name"])->toArray();
             }
             unset($key,$value);
         }
@@ -245,7 +245,7 @@ class Admin extends AdminModel {
 
 
     public function getAll(){
-        $list=$this->order("id asc")->column("username,true_name,email,mobile,status","id");
+        $list=$this->order("id asc")->column("username,true_name,email,mobile,img,status","id");
         return array_values($list);
     }
 

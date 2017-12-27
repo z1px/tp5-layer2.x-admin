@@ -25,9 +25,9 @@ function params_format($data,$filter=[]){
     return $data;
 }
 /**
- * 处理
- * @param $data 待处理一维数组
- * @param array $filter 列表中键值如果为空则删除，否则返回null
+ * 数组NULL处理
+ * @param $data 待处理数组
+ * @param array $filter 列表中键值如果为null则修改成空字符串""
  * @return array
  */
 function result_format($data){
@@ -99,4 +99,18 @@ if(!function_exists('node_merge')){
 
         return $arr;
     }
+}
+
+//将时间区间转成时间列表
+function list_Ymd($begin, $end = true, $range = 86400) {
+    $begin = strtotime($begin)?strtotime($begin):$begin;
+    if(true === $end){
+        $end=time();
+    }else{
+        $end = strtotime($end)?strtotime($end):$end;
+    }
+
+    return array_map(function ($time) {
+        return date('Ymd', $time);
+    }, range($begin, $end, $range));
 }

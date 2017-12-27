@@ -1,7 +1,7 @@
 {extend name="layout:form" /}
 
 {block name="main"}
-<form class="layui-form layui-form-pane mb60" action="" method="post">
+<form class="layui-form layui-form-pane" action=""  lay-filter="myinfo">
     <div class="layui-form-item">
         <label class="layui-form-label">账号</label>
         <div class="layui-input-inline">
@@ -51,7 +51,7 @@
         </div>
         <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
     </div>
-    <div class="layui-form-item button_fixed">
+    <div class="layui-form-item button_fixed" style="display: none;">
         <div class="layui-input-block">
             <input type="hidden" name="id" value="{$data.id}">
             <button class="layui-btn layui-btn-normal" lay-submit lay-filter="form_myinfo">立即提交</button>
