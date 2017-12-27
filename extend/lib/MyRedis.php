@@ -12,10 +12,17 @@ namespace lib;
 use BadFunctionCallException;
 use Redis;
 
+/**
+ * Class MyRedis
+ * @package lib
+ * 单例模式
+ */
 class MyRedis {
 
     /** @var Redis */
-    public $handler = null;
+    private $handler = null;
+
+    private static $_instance = null;//属性值为对象,默认为null
 
     //默认配置
     private $config  = [
@@ -32,11 +39,35 @@ class MyRedis {
      * 构造函数
      * __construct()方法到实例化时自动加载function
      */
-    public function __construct($config = []) {
+    private function __construct($config = []) {
         if(is_array($config) && !empty($config)){
             $this->config = array_merge($this->config, $config);
         }
         $this->connect();
+    }
+
+    /**
+     * 单例获取对象
+     * @param array $config
+     * @return MyRedis|null
+     */
+    public static function getInstance($config = []){
+        if (empty(self::$_instance)) {
+            self::$_instance = new self($config);
+        }
+        return self::$_instance;
+    }
+
+    /**
+     * 单例获取服务器连接句柄，执行原生命令
+     * @param array $config
+     * @return Redis
+     */
+    public static function getHandler($config = []){
+        if (empty(self::$_instance)) {
+            self::$_instance = new self($config);
+        }
+        return self::$_instance->handler();
     }
 
     public function handler(){
@@ -71,11 +102,6 @@ class MyRedis {
         return true;
     }
 
-    public function select(){
-        $this->ping();
-        return $this->handler->select($this->select);
-    }
-
     /**
      * 连接检测
      */
@@ -91,6 +117,15 @@ class MyRedis {
 
         }*/
         return true;
+    }
+
+    /**
+     * 选择数据库
+     * @return bool
+     */
+    public function select(){
+        $this->ping();
+        return $this->handler->select($this->select);
     }
 
     /**
@@ -138,6 +173,11 @@ class MyRedis {
     //__toString()方法用来获取类名
     public function __toString() {
         return __CLASS__;
+    }
+
+    // 覆盖__clone()方法，禁止克隆
+    public function __clone(){
+        return false;
     }
 
     /**
