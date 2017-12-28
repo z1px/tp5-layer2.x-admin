@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 100122
 File Encoding         : 65001
 
-Date: 2017-12-29 00:57:12
+Date: 2017-12-29 01:27:57
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -79,7 +79,7 @@ CREATE TABLE `tp5_auth_rule` (
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uni_auth_rule_name` (`name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COMMENT='规则表';
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COMMENT='规则表';
 
 -- ----------------------------
 -- Records of tp5_auth_rule
@@ -101,6 +101,9 @@ INSERT INTO `tp5_auth_rule` VALUES ('14', 'admin/Test/index', '测试方法', 'f
 INSERT INTO `tp5_auth_rule` VALUES ('15', 'admin/Log/default', '日志管理', 'fa-file-text', '1', '1', null, '2', '1514479440', '1514479440');
 INSERT INTO `tp5_auth_rule` VALUES ('16', 'admin/Account/loginLog', '登录日志', 'fa-eraser', '1', '1', null, '15', '1514479475', '1514479475');
 INSERT INTO `tp5_auth_rule` VALUES ('17', 'admin/Account/behaviorLog', '行为日志', 'fa-file-text', '1', '1', null, '15', '1514479527', '1514479527');
+INSERT INTO `tp5_auth_rule` VALUES ('18', 'admin/System/default', '系统菜单', 'fa-book', '1', '2', null, '2', '1514480583', '1514480723');
+INSERT INTO `tp5_auth_rule` VALUES ('19', 'admin/Index/index', '首页', 'fa-book', '2', '2', null, '18', '1514480663', '1514480676');
+INSERT INTO `tp5_auth_rule` VALUES ('20', 'admin/Index/main', '欢迎页', 'fa-book', '2', '2', null, '18', '1514480718', '1514480718');
 
 -- ----------------------------
 -- Table structure for tp5_auth_group_access
@@ -135,12 +138,13 @@ CREATE TABLE `tp5_auth_group` (
   `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='用户组表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='用户组表';
 
 -- ----------------------------
 -- Records of tp5_auth_group
 -- ----------------------------
 INSERT INTO `tp5_auth_group` VALUES ('1', '超级管理员', '1', '1,2,5,6,7,8,9,15,16,17,3,10,12,13,11,4,14', '1514477133', '1514479549');
+INSERT INTO `tp5_auth_group` VALUES ('2', '普通管理员', '1', '1,2,15,16,17,3,10,12,13,11,4,14', '1514480400', '1514480400');
 
 -- ----------------------------
 -- Table structure for tp5_admin
@@ -170,6 +174,6 @@ CREATE TABLE `tp5_admin` (
 -- ----------------------------
 -- Records of tp5_admin
 -- ----------------------------
-INSERT INTO `tp5_admin` VALUES ('1', 'sky001', '系统管理员', null, null, 'MDAwMDAwMDAwMDU1NzQ4NTJiYjU2MTlmMjlza3kxMjM', '/uploads/images/20171227/1.jpg', '1', '1514296135', '127.0.0.1', '', '1500016980', '1514475127', 'b93f15442ed7f49171b658936893bfd6');
-INSERT INTO `tp5_admin` VALUES ('2', 'sky002', '测试', null, null, 'MDAwMDAwMDAwMDU1NzQ4NTJiYjU2MTlmMjlza3kxMjM', null, '1', '1514307829', '127.0.0.1', '', '1514283560', '1514475470', 'ee3414b35f09b4983fe428acbb7de2ce');
+INSERT INTO `tp5_admin` VALUES ('1', 'sky001', '系统管理员', null, null, 'MDAwMDAwMDAwMDU1NzQ4NTJiYjU2MTlmMjlza3kxMjM', '/uploads/images/20171227/1.jpg', '1', '1514480873', '127.0.0.1', '', '1500016980', '1514480873', 'e9c9f2c5d967258722c57c24ac4748f3');
+INSERT INTO `tp5_admin` VALUES ('2', 'sky002', '测试', null, null, 'MDAwMDAwMDAwMDU1NzQ4NTJiYjU2MTlmMjlza3kxMjM', null, '1', '1514481833', '127.0.0.1', '', '1514283560', '1514481833', 'b58dda1b245038cd5395a196d92fc600');
 SET FOREIGN_KEY_CHECKS=1;

@@ -76,11 +76,13 @@ class Auth {
         if (!$this->auth_on) return true;
 
         $authList = $this->getAuthList($uid);
-
         if(!is_array($name)) $name = explode(',', $name);
         $list = []; //有权限的name
+        foreach ($name as $key=>$value){
+            $name[$key]=strtolower($value);
+        }
         foreach ($authList as $val) {
-            if (in_array($val, $name))
+            if (in_array(strtolower($val), $name))
                 $list[] = $val;
         }
         if ($relation=='or' and !empty($list)) {
@@ -115,7 +117,7 @@ class Auth {
         }
         //读取用户所属用户组
         $groups = $this->getGroups($uid);
-        $ids = [];
+        $ids = $this->authRule->where(["type"=>2])->column("id");
         foreach ($groups as $g) {
             $ids = array_merge($ids, explode(',', trim($g['rules'], ',')));
         }
@@ -196,11 +198,10 @@ class Auth {
         $ids = array_unique($ids);
         if (empty($ids)) return [];
         //读取用户组所有权限规则
-        $where = ["pid"=>0];
+        $where = ["pid"=>0,"status"=>1];
         if($uid!=1){
             $where["id"]=["in",$ids];
             $where["type"]=["in",[1,2]];
-            $where["status"]=1;
         }
         $rules = $this->authRule->where($where)->order("id asc")->column('name,title,icon,condition,type,pid',"id");
         unset($where);
@@ -233,11 +234,10 @@ class Auth {
         foreach ($onelevel as $value){
 
             //读取用户组所有权限规则
-            $where = ["pid"=>$value["id"]];
+            $where = ["pid"=>$value["id"],"status"=>1];
             if($uid!=1){
                 $where["id"]=["in",$ids];
                 $where["type"]=["in",[1,2]];
-                $where["status"]=1;
             }
             $rules = $this->authRule->where($where)->order("id asc")->column('name,title,icon,condition,type,pid',"id");
             unset($where);
@@ -261,11 +261,10 @@ class Auth {
                 $r["url"]=$r["url"]=filter_var($r["name"], FILTER_VALIDATE_URL)?$r["name"]:Url::build($r["name"]);
                 $r["spread"]=true;
                 //读取用户组所有权限规则
-                $where = ["pid"=>$r["id"]];
+                $where = ["pid"=>$r["id"],"status"=>1];
                 if($uid!=1){
                     $where["id"]=["in",$ids];
                     $where["type"]=["in",[1,2]];
-                    $where["status"]=1;
                 }
                 $rules_children = $this->authRule->where($where)->order("id asc")->column('name,title,icon,condition,type,pid',"id");
                 unset($where);
@@ -295,11 +294,10 @@ class Auth {
         $ids = array_unique($ids);
 
         //读取用户组所有权限规则
-        $where = ["pid"=>$pid];
+        $where = ["pid"=>$pid,"status"=>1];
         if($uid!=1){
             $where["id"]=["in",$ids];
             $where["type"]=["in",[1,2]];
-            $where["status"]=1;
         }
         $rules = $this->authRule->where($where)->order("id asc")->column('name,title,icon,condition,type,pid',"id");
         unset($where);
@@ -320,11 +318,10 @@ class Auth {
             $r["url"]=$r["url"]=filter_var($r["name"], FILTER_VALIDATE_URL)?$r["name"]:Url::build($r["name"]);
             $r["spread"]=true;
             //读取用户组所有权限规则
-            $where = ["pid"=>$r["id"]];
+            $where = ["pid"=>$r["id"],"status"=>1];
             if($uid!=1){
                 $where["id"]=["in",$ids];
                 $where["type"]=["in",[1,2]];
-                $where["status"]=1;
             }
             $rules_children = $this->authRule->where($where)->order("id asc")->column('name,title,icon,condition,type,pid',"id");
             unset($where);
