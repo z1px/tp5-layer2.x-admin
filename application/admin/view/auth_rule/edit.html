@@ -4,9 +4,9 @@
 <!--class="mb60"-->
 <form class="layui-form" action="" lay-filter="form-edit">
     <div class="layui-form-item">
-        <label class="layui-form-label">规则名称</label>
+        <label class="layui-form-label">菜单名称</label>
         <div class="layui-input-block">
-            <input type="text" name="title" lay-verify="required" lay-verType="tips" value="{$data.title}" placeholder="请输入规则中文名称" autocomplete="off" class="layui-input">
+            <input type="text" name="title" lay-verify="required" lay-verType="tips" value="{$data.title}" placeholder="请输入菜单名称" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -22,39 +22,31 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">规则标识</label>
+        <label class="layui-form-label">菜单地址</label>
         <div class="layui-input-block">
-            <input type="text" name="name" lay-verify="required" lay-verType="tips" value="{$data.name}" placeholder="请输入规则唯一标识" autocomplete="off" class="layui-input">
+            <input type="text" name="name" lay-verify="required" lay-verType="tips" value="{$data.name}" placeholder="module/controller/action" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">图标</label>
+        <label class="layui-form-label">菜单图标</label>
         <div class="layui-input-inline">
             <input type="text" name="icon" lay-verify="required" lay-verType="tips" value="{$data.icon}" placeholder="支持layui图标和fa-图标" autocomplete="off" class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux">{if condition="substr($data['icon'], 0, 3) eq 'fa-'"}<i class="fa {$data.icon}" aria-hidden="true"></i>{else /}<i class="layui-icon">{$data.icon}</i>{/if}</div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">表达式类型</label>
-        <div class="layui-input-inline">
+        <label class="layui-form-label">权限类型</label>
+        <div class="layui-input-block">
             {volist name="list_type" id="vo"}
             <input type="radio" name="type" value="{$key}" title="{$vo}" {eq name="data.type" value="$key"}checked{/eq}>
             {/volist}
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">规则状态</label>
-        <div class="layui-input-inline">
+        <label class="layui-form-label">菜单状态</label>
+        <div class="layui-input-block">
             {volist name="list_status" id="vo"}
             <input type="radio" name="status" value="{$key}" title="{$vo}" {eq name="data.status" value="$key"}checked{/eq}>
-            {/volist}
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">菜单状态</label>
-        <div class="layui-input-inline">
-            {volist name="list_menu" id="vo"}
-            <input type="radio" name="menu" value="{$key}" title="{$vo}" {eq name="data.menu" value="$key"}checked{/eq}>
             {/volist}
         </div>
     </div>

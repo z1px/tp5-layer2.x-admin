@@ -244,7 +244,6 @@ button {
 }
 
 .kit-table .kit-search-mored {
-    width: 100%;
     height: auto;
     top: 51px;
     background-color: white;
@@ -253,7 +252,8 @@ button {
     position: absolute;
     margin-bottom: 10px;
     display: none;
-    right: 0px;
+    right: 0;
+    min-width: 664px;
     width: 50%;
 }
 
@@ -409,7 +409,7 @@ button {
         left: 50px;
     }
     .kit-table .kit-search-mored {
-        width: 100%;
+        min-width: 332px;
         box-shadow: 0 4px 7px -3px #ccc;
     }
     .kit-sided .layui-nav-tree .layui-nav-child a,

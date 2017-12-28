@@ -109,8 +109,9 @@ function list_Ymd($begin, $end = true, $range = 86400) {
     }else{
         $end = strtotime($end)?strtotime($end):$end;
     }
-
-    return array_map(function ($time) {
+    $list = array_map(function ($time) {
         return date('Ymd', $time);
     }, range($begin, $end, $range));
+    rsort($list);
+    return $list;
 }

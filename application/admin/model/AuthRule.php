@@ -44,21 +44,18 @@ class AuthRule extends Model {
         "data"=>[],
     ];
 
-    //类型
-    public $list_type=[
-        1=>"定义规则表达式",
-    ];
-
-    //状态
-    public $list_status=[
-        1=>"正常",
-        2=>"禁用",
-    ];
 
     //菜单状态
-    public $list_menu=[
+    public $list_status=[
         1=>"展示",
         2=>"不展示",
+    ];
+
+    //权限类型
+    public $list_type=[
+        1=>"权限验证",
+        2=>"白名单",
+        3=>"黑名单",
     ];
 
     protected function getStatusNameAttr($value,$data) {
@@ -69,11 +66,6 @@ class AuthRule extends Model {
     protected function getTypeNameAttr($value,$data) {
         if(!isset($data["type"])) return "未知类型";
         return isset($this->list_type[$data["type"]])?$this->list_type[$data["type"]]:"未知类型";
-    }
-
-    protected function getMenuNameAttr($value,$data) {
-        if(!isset($data["menu"])) return "未知类型";
-        return isset($this->list_menu[$data["menu"]])?$this->list_menu[$data["menu"]]:"未知类型";
     }
 
 }

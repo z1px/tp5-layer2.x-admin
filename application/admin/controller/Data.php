@@ -9,28 +9,27 @@
 namespace app\admin\controller;
 
 
-use think\Config;
-use think\Request;
-use think\Url;
+use app\admin\logic\Auth;
 
 class Data extends Common {
 
+    protected $auth;
+    protected $uid;
+
     protected function _before() {
-
+        $this->auth = new Auth();
+        $this->uid = isset($this->account["id"])?$this->account["id"]:0;
     }
 
+    //顶部菜单
     public function onelevel(){
-        $this->result = Config::get("onelevel");
+        $this->result = $this->auth->getOnelevel($this->uid);
         return $this->_result();
     }
 
+    //左侧菜单
     public function navbar(){
-        $this->result = Config::get("navbar.{$this->request->param("id",0)}");
-        return $this->_result();
-    }
-
-    public function table(){
-        $this->result = Config::get("table");
+        $this->result = $this->auth->getNavbarByPid($this->uid,$this->request->param("id",0));
         return $this->_result();
     }
 

@@ -21,11 +21,22 @@
             <div class="kit-search-body">
                 <div class="layui-form-item">
                     <div class="layui-inline">
+                        <label class="layui-form-label">权限类型</label>
+                        <div class="layui-input-inline">
+                            <select name="type" lay-filter="">
+                                <option value=""></option>
+                                {volist name="list_type" id="vo"}
+                                <option value="{$key}">{$vo}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
                         <label class="layui-form-label">菜单状态</label>
                         <div class="layui-input-inline">
-                            <select name="menu" lay-filter="">
+                            <select name="status" lay-filter="">
                                 <option value=""></option>
-                                {volist name="list_menu" id="vo"}
+                                {volist name="list_status" id="vo"}
                                 <option value="{$key}">{$vo}</option>
                                 {/volist}
                             </select>
@@ -50,10 +61,7 @@
             {{# } }}
         </script>
         <script type="text/html" id="switchTpl">
-            <input type="checkbox" name="status" {{#  if(d.status == 1){ }}checked{{#  } }} lay-skin="switch" lay-text="正常|禁用" lay-filter="switch_status" data-id="{{d.id}}">
-        </script>
-        <script type="text/html" id="switchMenuTpl">
-            <input type="checkbox" name="menu" {{#  if(d.menu == 1){ }}checked{{#  } }} lay-skin="switch" lay-text="展示|禁用" lay-filter="switch_menu" data-id="{{d.id}}">
+            <input type="checkbox" name="status" {{#  if(d.status == 1){ }}checked{{#  } }} lay-skin="switch" lay-text="展示|禁用" lay-filter="switch_status" data-id="{{d.id}}">
         </script>
         <script type="text/html" id="barDemo">
             <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="add_pid">添加</a>
@@ -78,7 +86,6 @@
                 url:"{:Url('admin/AuthRule/table')}",
                 url_del:"{:Url('admin/AuthRule/del')}",
                 url_switch:"{:Url('admin/AuthRule/editStatus')}",
-                url_switch_menu:"{:Url('admin/AuthRule/editMenu')}",
                 cols: [
                     [{
                         field: 'id',
@@ -91,34 +98,28 @@
                         title: '父ID'
                     }, {
                         field: 'ptitle',
-                        title: '父规则名称',
+                        title: '父菜单',
                         width: 120
                     }, {
                         field: 'title',
-                        title: '规则中文名称',
+                        title: '菜单名称',
                         width: 240
                     }, {
                         field: 'name',
-                        title: '规则唯一标识',
+                        title: '菜单地址',
                         sort: false
                     }, {
                         field: 'icon',
-                        title: '图标',
+                        title: '菜单图标',
                         templet: '#iconTpl'
                     }, {
                         field: 'type_name',
-                        title: '表达式类型'
+                        title: '权限类型'
                     }, {
                         field: 'status_name',
-                        title: '规则状态',
-                        sort: true,
-                        templet: '#switchTpl',
-                        align: 'center'
-                    }, {
-                        field: 'menu_name',
                         title: '菜单状态',
                         sort: true,
-                        templet: '#switchMenuTpl',
+                        templet: '#switchTpl',
                         align: 'center'
                     }, {
                         field: 'condition',
@@ -140,7 +141,7 @@
                 ]
             },
             open:{
-                area:['480px', '630px'],
+                area:['500px', '580px'],
                 "edit":{
                     title: "修改",
                     url:"{:Url('admin/AuthRule/edit')}"

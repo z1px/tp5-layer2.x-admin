@@ -48,7 +48,6 @@ class Admin extends AdminModel {
             $this->result["code"]=0;
             $this->result["msg"]="修改失败";
         }else{
-//            $this->result=$this->getById($id);
             $this->result["msg"]="修改成功";
         }
         return $this->result;
@@ -126,6 +125,7 @@ class Admin extends AdminModel {
                 $this->result=$authGroup->editGroupAccess(["id"=>$id,"group_id"=>$params["group_id"]]);
                 unset($authGroup);
             }
+            $this->result=$this->getById($id);
             $this->result["msg"]="修改成功";
         }
         return $this->result;

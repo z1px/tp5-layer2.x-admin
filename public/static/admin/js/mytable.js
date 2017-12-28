@@ -303,6 +303,7 @@ layui.define(['table','form','laytpl','laydate','layer','code'], function(export
                                             if(result.code==1){
                                                 top_index && layerTips.close(top_index); //关闭弹出层
                                                 //同步更新缓存对应的值
+                                                if(result.data) $.extend(true, field, result.data);
                                                 obj.update(field);
                                             }
                                         },complete:function(XMLHttpRequest){
@@ -370,6 +371,7 @@ layui.define(['table','form','laytpl','laydate','layer','code'], function(export
                                     if(result.code==1){
                                         top_index && layerTips.close(top_index); //关闭弹出层
                                         //同步更新缓存对应的值
+                                        if(result.data) $.extend(true, data.field, result.data);
                                         obj.update(data.field);
                                     }
                                 },complete:function(XMLHttpRequest){
@@ -459,6 +461,7 @@ layui.define(['table','form','laytpl','laydate','layer','code'], function(export
                                             if(result.code==1){
                                                 top_index && layerTips.close(top_index); //关闭弹出层
                                                 //同步更新缓存对应的值
+                                                if(result.data) $.extend(true, field, result.data);
                                                 obj.update(field);
                                             }
                                         },complete:function(XMLHttpRequest){
@@ -526,6 +529,7 @@ layui.define(['table','form','laytpl','laydate','layer','code'], function(export
                                     if(result.code==1){
                                         top_index && layerTips.close(top_index); //关闭弹出层
                                         //同步更新缓存对应的值
+                                        if(result.data) $.extend(true, data.field, result.data);
                                         obj.update(data.field);
                                     }
                                 },complete:function(XMLHttpRequest){

@@ -55,25 +55,26 @@ class AuthRule extends AuthRuleModel {
             $this->result["code"]=0;
             $this->result["msg"]="修改失败";
         }else{
+            $this->result=$this->getById($id);
             $this->result["msg"]="修改成功";
         }
         return $this->result;
     }
 
     public function getById($id){
-        $data=$this->field("id,name,title,icon,type,status,menu,condition,pid,create_time,update_time")->find($id);
+        $data=$this->field("id,name,title,icon,type,status,condition,pid,create_time,update_time")->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="规则不存在";
         }else{
-            $this->result["data"]=$data->append(["type_name","status_name","menu_name"])->toArray();
+            $this->result["data"]=$data->append(["type_name","status_name"])->toArray();
         }
         unset($data);
         return $this->result;
     }
 
     public function del($id){
-        $data=$this->field("id,name,title,icon,type,status,menu,condition,pid,create_time,update_time")->find($id);
+        $data=$this->field("id,name,title,icon,type,status,condition,pid,create_time,update_time")->find($id);
         if(empty($data)){
             $this->result["code"]=0;
             $this->result["msg"]="规则不存在";
@@ -123,33 +124,6 @@ class AuthRule extends AuthRuleModel {
         return $this->result;
     }
 
-    public function editMenu($params){
-
-        $validate = Loader::validate('AuthRule');
-        if(!$validate->scene("edit_menu")->check($params)){
-            $this->result["code"]=0;
-            $this->result["msg"]=$validate->getError();
-            unset($validate);
-            return $this->result;
-        }
-        $id=$params["id"];
-        unset($params["id"]);
-        $data=$this->field("id,menu")->find($id);
-        if(empty($data)){
-            $this->result["code"]=0;
-            $this->result["msg"]="数据不存在，修改失败";
-            return $this->result;
-        }
-        $res=$data->allowField(["menu","update_time"])->save($params);
-        if(empty($res)){
-            $this->result["code"]=0;
-            $this->result["msg"]="修改失败";
-        }else{
-            $this->result["msg"]="修改成功";
-        }
-        return $this->result;
-    }
-
     public function getList($params){
 
         if(!isset($params["page"])) $params["page"]=1;
@@ -165,7 +139,7 @@ class AuthRule extends AuthRuleModel {
         array_map(function ($value) use (&$where,$params){
             if(isset($params[$value]) && !empty($params[$value])) $where[$value]=$params[$value];
         },
-            ["type","status","menu","pid"]
+            ["type","status","pid"]
         );
         if(!isset($params["begin_time"])) $params["begin_time"]="";
         if(!isset($params["end_time"])) $params["end_time"]="";
@@ -180,18 +154,17 @@ class AuthRule extends AuthRuleModel {
             if(!empty($params["field"])){
                 if($params["field"]=="type_name") $params["field"]="type";
                 if($params["field"]=="status_name") $params["field"]="status";
-                if($params["field"]=="menu_name") $params["field"]="menu";
                 $order="{$params["field"]} {$params["order"]}";
             }
         }
-        $list=$this->field("id,name,title,icon,type,status,menu,condition,pid,create_time,update_time")->where($where)->page($params["page"],$params["limit"])->order($order)->select();
+        $list=$this->field("id,name,title,icon,type,status,condition,pid,create_time,update_time")->where($where)->page($params["page"],$params["limit"])->order($order)->select();
         $this->result["count"]=$this->where($where)->Count();
         unset($params,$where);
         if(empty($list)){
             $list=[];
         }else{
             foreach ($list as $key=>$value){
-                $list[$key]=$value->append(["type_name","status_name","menu_name"])->toArray();
+                $list[$key]=$value->append(["type_name","status_name"])->toArray();
             }
             unset($key,$value);
         }
@@ -206,7 +179,7 @@ class AuthRule extends AuthRuleModel {
      * bool型json会转成0,1，zTree识别不出来，所以要加引号
      */
     public function getAll($params){
-        $list=$this->order("id asc")->column("name,title,icon,type,status,menu,condition,pid","id");
+        $list=$this->order("id asc")->column("name,title,icon,type,status,condition,pid","id");
         if(!empty($list)){
             $rules=[];
             if(isset($params["group_id"]) && !empty($params["group_id"])){
@@ -239,7 +212,7 @@ class AuthRule extends AuthRuleModel {
      */
     public function getRuleList($pid=0,$prefix="|—",$ptitle=false,$level=0){
 
-        $field = "name,title,icon,type,status,menu,condition,pid";
+        $field = "name,title,icon,type,status,condition,pid";
         if($ptitle&&!is_array($ptitle)){
             $ptitle = $this->column("title","id");
         }
@@ -253,6 +226,7 @@ class AuthRule extends AuthRuleModel {
                 $value["title"] = $prefix.$value["title"];
                 if(isset($value["create_time"])&&!empty($value["create_time"])) $value["create_time"]=date("Y-m-d H:i:s",$value["create_time"]);
                 if(isset($value["update_time"])&&!empty($value["update_time"])) $value["update_time"]=date("Y-m-d H:i:s",$value["update_time"]);
+                $value["type_name"] = $this->list_type[$value["type"]];
                 $value["level"] = $level;
                 if($ptitle){
                     $value["ptitle"]=empty($value["pid"])?"<font color='red'>顶级菜单</font>":(isset($ptitle[$value["pid"]])?$ptitle[$value["pid"]]:"ERROR");

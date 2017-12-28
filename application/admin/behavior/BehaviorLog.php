@@ -9,8 +9,8 @@
 namespace app\admin\behavior;
 
 
+use app\admin\model\AuthRule;
 use app\admin\model\BehaviorLog as BehaviorLogModel;
-use think\Config;
 use think\Cookie;
 use think\Request;
 
@@ -30,7 +30,7 @@ class BehaviorLog {
         if(!in_array(strtolower($extra["request"]->action()),$allow_action) && "upload"!=strtolower($extra["request"]->controller())) return ;
 
         $row=[
-            "title"=>isset(Config::get("behavior_title")[strtolower($extra["request"]->module())][strtolower($extra["request"]->controller())][strtolower($extra["request"]->action())])?Config::get("behavior_title")[strtolower($extra["request"]->module())][strtolower($extra["request"]->controller())][strtolower($extra["request"]->action())]:"",
+            "title"=>"",
             "module"=>$extra["request"]->module(),
             "controller"=>$extra["request"]->controller(),
             "action"=>$extra["request"]->action(),
@@ -41,6 +41,9 @@ class BehaviorLog {
             "admin_id"=>isset($extra["account"]["id"])?Cookie::get("login_id"):$extra["account"]["id"],
             "username"=>isset($extra["account"]["username"])?Cookie::get("login_name"):$extra["account"]["username"]
         ];
+        $authRule = new AuthRule();
+        $row["title"] = $authRule->where(["lower(name)"=>strtolower($extra["request"]->module()."/".$extra["request"]->controller()."/".$extra["request"]->action())])->value("title");
+        unset($authRule);
         if($extra["request"]->isGet()){
             $row["type"][]="get";
         }elseif($extra["request"]->isPost()){

@@ -211,7 +211,8 @@ class AuthGroup extends AuthGroupModel {
             $this->result["code"]=0;
             $this->result["msg"]="修改失败";
         }else{
-//            $this->result["data"]=$this->getAll($params);
+            $admin = new Admin();
+            $this->result=$admin->getById($uid);
             $this->result["msg"]="修改成功";
         }
         return $this->result;
