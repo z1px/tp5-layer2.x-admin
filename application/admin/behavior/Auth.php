@@ -10,12 +10,14 @@ namespace app\admin\behavior;
 
 
 use app\admin\logic\Login;
+use think\Config;
 use think\exception\HttpResponseException;
 use think\Request;
 use think\Response;
 use think\response\Redirect;
 use think\Url;
 use app\admin\logic\Auth as AuthLib;
+use think\View;
 
 class Auth {
 
@@ -27,7 +29,15 @@ class Auth {
 
     // 异常抛出
     protected function throwError(){
-        throw new HttpResponseException(Response::create($this->result, "json"));
+
+        if(Request::instance()->isAjax()||Request::instance()->isPost()){
+            $type = "json";
+        }else{
+            $type = "html";
+            $this->result["url"]='javascript:history.back(-1);';
+            $this->result = View::instance(Config::get('template'), Config::get('view_replace_str'))->fetch(Config::get('dispatch_error_tmpl'), $this->result);
+        }
+        throw new HttpResponseException(Response::create($this->result, $type));
     }
     // 重定向
     protected function redirect($url, $code=302){
