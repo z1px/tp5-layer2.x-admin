@@ -171,9 +171,10 @@ class AuthRule extends AuthRuleModel {
     /**
      * 用户组菜单列表
      * bool型json会转成0,1，zTree识别不出来，所以要加引号
+     * 只显示需要权限判断的菜单
      */
     public function getAll($params){
-        $list=$this->order("id asc")->column("name,title,icon,type,status,condition,pid","id");
+        $list=$this->order("id asc")->where(["type"=>1])->column("name,title,icon,type,status,condition,pid","id");
         if(!empty($list)){
             $rules=[];
             if(isset($params["group_id"]) && !empty($params["group_id"])){
