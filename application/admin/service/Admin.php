@@ -211,14 +211,17 @@ class Admin extends AdminModel {
             },
             ["username","true_name","mobile","email","status"]
         );
-        if(!isset($params["begin_time"])) $params["begin_time"]="";
-        if(!isset($params["end_time"])) $params["end_time"]="";
-        if(!empty($params["begin_time"])&&empty($params["end_time"])){
-            $where["create_time"]=["egt",strtotime($params["begin_time"]." 00:00:00")];
-        }elseif(empty($params["begin_time"])&&!empty($params["end_time"])){
-            $where["create_time"]=["elt",strtotime($params["end_time"]." 23:59:59")];
-        }elseif(!empty($params["begin_time"])&&!empty($params["end_time"])){
-            $where["create_time"]=["between",[strtotime($params["begin_time"]." 00:00:00"),strtotime($params["end_time"]." 23:59:59")]];
+//        if(!isset($params["begin_time"])) $params["begin_time"]="";
+//        if(!isset($params["end_time"])) $params["end_time"]="";
+//        if(!empty($params["begin_time"])&&empty($params["end_time"])){
+//            $where["create_time"]=["egt",strtotime($params["begin_time"]." 00:00:00")];
+//        }elseif(empty($params["begin_time"])&&!empty($params["end_time"])){
+//            $where["create_time"]=["elt",strtotime($params["end_time"]." 23:59:59")];
+//        }elseif(!empty($params["begin_time"])&&!empty($params["end_time"])){
+//            $where["create_time"]=["between",[strtotime($params["begin_time"]." 00:00:00"),strtotime($params["end_time"]." 23:59:59")]];
+//        }
+        if(isset($params["begin_end"])&&!empty($params["begin_end"])){
+            $where["FROM_UNIXTIME(create_time,'%Y-%m-%d')"]=["between",array_map("trim",explode("~",$params["begin_end"]))];
         }
         if(isset($params["field"])){
             if(!empty($params["field"])){

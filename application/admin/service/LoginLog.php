@@ -32,14 +32,8 @@ class LoginLog extends LoginLogModel {
                 $order="{$params["field"]} {$params["order"]}";
             }
         }
-        if(!isset($params["begin_time"])) $params["begin_time"]="";
-        if(!isset($params["end_time"])) $params["end_time"]="";
-        if(!empty($params["begin_time"])&&empty($params["end_time"])){
-            $where["create_time"]=["egt",strtotime($params["begin_time"])];
-        }elseif(empty($params["begin_time"])&&!empty($params["end_time"])){
-            $where["create_time"]=["elt",strtotime($params["end_time"])];
-        }elseif(!empty($params["begin_time"])&&!empty($params["end_time"])){
-            $where["create_time"]=["between",[strtotime($params["begin_time"]),strtotime($params["end_time"])]];
+        if(isset($params["begin_end"])&&!empty($params["begin_end"])){
+            $where["FROM_UNIXTIME(create_time,'%Y-%m-%d')"]=["between",array_map("trim",explode("~",$params["begin_end"]))];
         }
 
         $list=$this->field("id,admin_id,username,account,ip,area,create_time")->where($where)->page($params["page"],$params["limit"])->order($order)->select();

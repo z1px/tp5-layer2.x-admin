@@ -926,24 +926,17 @@ layui.define(['table','form','laytpl','laydate','layer','code','ztree'], functio
 
             //外部事件调用
             lay('#date').on('click', function(e){ //假设 date 是一个按钮
+                _config.laydate.elem = this;
                 laydate.render(_config.laydate);
             });
 
-            var begin = _config.laydate;
-            var end = _config.laydate;
             //外部事件调用
-            lay('input[name=begin_time]').on('click', function(e){ //假设 date 是一个按钮
-                begin.elem = this;
-                begin.done = function (value, date, endDate) {
-                    end.min = value; //开始日选好后，重置结束日的最小日期
-                };
-                laydate.render(begin);
+            lay('#begin_end').on('click', function(e){ //假设 date 是一个按钮
+                _config.laydate.elem = this;
+                _config.laydate.range = "~";
+                laydate.render(_config.laydate);
             });
-            //外部事件调用
-            lay('input[name=end_time]').on('click', function(e){ //假设 date 是一个按钮
-                end.elem = this;
-                laydate.render(end);
-            });
+
         }
     };
 
