@@ -48,7 +48,7 @@ class AuthRule extends Model {
     //菜单状态
     public $list_status=[
         1=>"展示",
-        2=>"隐藏",
+        2=>"不展示",
     ];
 
     //权限类型

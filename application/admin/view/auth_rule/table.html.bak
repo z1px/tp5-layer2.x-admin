@@ -61,7 +61,7 @@
             {{# } }}
         </script>
         <script type="text/html" id="switchTpl">
-            <input type="checkbox" name="status" {{#  if(d.status == 1){ }}checked{{#  } }} lay-skin="switch" lay-text="展示|隐藏" lay-filter="switch_status" data-id="{{d.id}}">
+            <input type="checkbox" name="status" {{#  if(d.status == 1){ }}checked{{#  } }} lay-skin="switch" lay-text="展示|禁用" lay-filter="switch_status" data-id="{{d.id}}">
         </script>
         <script type="text/html" id="barDemo">
             <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="add_pid">添加</a>
