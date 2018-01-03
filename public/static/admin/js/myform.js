@@ -5,6 +5,11 @@ layui.define(['form','laydate','layer','upload'], function(exports) {
         layer = layui.layer,
         layerTips = parent.layer === undefined ? layui.layer : parent.layer; //获取父窗口的layer对象
 
+    // 当form表单在顶级窗口时，显示form表单提交按钮，作为单独的页面
+    if(top.location==self.location){
+        $("#form_btn").show();
+    }
+
     var myform = {
         config: {
             url:'',

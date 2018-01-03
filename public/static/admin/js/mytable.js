@@ -824,6 +824,19 @@ layui.define(['table','form','laytpl','laydate','layer','code'], function(export
                         // layerTips.msg(names.join(','));
                         // console.log(ids.join(','));
                         break;
+                    case 'download':
+                        var url = _config.table.url + "?";
+                        var form_field = $('form[lay-filter=kit-search-form]').serializeArray();
+                        // var field={};
+                        if(form_field){
+                            $.each(form_field,function (i,v){
+                                // field[v.name]=v.value;
+                                if(v.value) url += v.name + "=" + v.value + "&";
+                            })
+                        }
+                        url += "download=1";
+                        window.open(url);
+                        break;
                 }
             });
 
