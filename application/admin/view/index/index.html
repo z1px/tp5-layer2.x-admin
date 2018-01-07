@@ -22,6 +22,7 @@
 
             </ul>
             <ul class="layui-nav layui-layout-right kit-nav">
+                <!--<li class="layui-nav-item"><a href="javascript:;" id="msg"><i class="fa fa-envelope-o" aria-hidden="true"></i> 消息</a></li>-->
                 <li class="layui-nav-item">
                     <a href="javascript:;">
                         <i class="layui-icon">&#xe63f;</i> 皮肤
@@ -85,13 +86,13 @@
             //将message设置为全局以便子页面调用
             message = layui.message;
 
-            // //示例，监听某点击事件后触发
-            // $("#msg").on('click',function(){
-            //     message.show({
-            //         skin:'cyan',//皮肤  支持:red,orange,cyan,blue,black,default
-            //         msg:'提示信息'//提示信息
-            //     });
-            // });
+            //示例，监听某点击事件后触发
+            $("#msg").on('click',function(){
+                message.show({
+                    skin:'cyan',//皮肤  支持:red,orange,cyan,blue,black,default
+                    msg:'提示信息'//提示信息
+                });
+            });
 
             //主入口
             app.set({

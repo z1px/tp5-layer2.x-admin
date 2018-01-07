@@ -17,7 +17,13 @@ class Test extends Controller {
     public function index(){
         $auth = new Auth();
 
-        dump($auth->check("qqq",1));
+        dump(url("admin/index/deaaa"));
+        dump(url("admin/Index/index"));
+
+        dump($auth->check("admin/Index/index",2));
+        dump($auth->getGroups(2));
+        dump($auth->getOnelevel(2));
+        dump($auth->getNavbar(2));
     }
 
 }
