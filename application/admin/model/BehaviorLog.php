@@ -9,6 +9,7 @@
 namespace app\admin\model;
 
 
+use lib\IP;
 use think\Cookie;
 use think\Model;
 use think\Request;
@@ -60,7 +61,7 @@ class BehaviorLog extends Model {
     protected function setAreaAttr($value){
         if(!empty($value)) return $value;
         $ip=Request::instance()->ip();
-        return get_ip_area($ip);
+        return trim(implode(" ",IP::find($ip)));
     }
 
     protected function setAdminIdAttr($value){

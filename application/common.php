@@ -36,26 +36,3 @@ function check_email($email) {
     else
         return true;
 }
-
-/**
- * 通过新浪接口获取IP城市
- * @param $ip
- * @return bool|string
- */
-function get_ip_area($ip){
-    if(empty($ip)) return false;
-    $url='http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip='.$ip;
-    $ch=curl_init($url);
-    curl_setopt($ch,CURLOPT_ENCODING,'utf8');
-    curl_setopt($ch,CURLOPT_TIMEOUT,10);
-    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);//获取数据返回
-    $location=curl_exec($ch);
-    curl_close($ch);
-    $location=json_decode($location,true);
-    $result="";
-    if(!empty($location["province"])) $result.=" ".$location["province"];
-    if(!empty($location["city"])) $result.=" ".$location["city"];
-    if(!empty($location["district"])) $result.=" ".$location["district"];
-    if(!empty($location["isp"])) $result.=" ".$location["isp"];
-    return trim($result);
-}

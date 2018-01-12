@@ -126,50 +126,57 @@ class Common extends Controller{
     }
 
     /**
-     * 返回结果
+     * 导出到csv文档
      * @param int $code
      * @return mixed
      */
-    protected function _export() {
+    protected function _export($callback) {
 
         Config::set('default_return_type','html');
-        ini_set('max_execution_time', '0');
-
-        unset($this->params,$this->request);
+        ini_set('max_execution_time', '0'); // 设置不超时
+        ini_set("memory_limit","-1"); // 设置不限制内存
 
         if($this->result["code"]==1){
-            if(!isset($this->result["title"])||empty($this->result["title"])) $this->result["title"]=date("YmdHis");
-            if(!isset($this->result["list"])) $this->result["list"]=[];
-//            $this->success("开始下载");
-            Loader::import("lib.PHPExcel");
-            Loader::import("lib.PHPExcel.IOFactory");
 
-            $phpexcel = new \PHPExcel();
-            $phpexcel->getProperties()
-                ->setCreator("Maarten Balliauw")
-                ->setLastModifiedBy("Maarten Balliauw")
-                ->setTitle("Office 2007 XLSX Test Document")
-                ->setSubject("Office 2007 XLSX Test Document")
-                ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
-                ->setKeywords("office 2007 openxml php")
-                ->setCategory("Test result file");
-            $phpexcel->getActiveSheet()->fromArray($this->result["list"]);
-            $phpexcel->getActiveSheet()->setTitle('Sheet1');
-            $phpexcel->setActiveSheetIndex(0);
+            $this->params["page"]=1;
+            $this->params["limit"]=100;
 
-            /* 生成到浏览器，提供下载 */
+            $this->result=$this->result=$callback($this->params);
+
+            if(!isset($this->result["filename"])||empty($this->result["filename"])) $this->result["filename"]="{$this->request->controller()}_{$this->request->action()}";
+            if(!isset($this->result["count"])) $this->result["count"]=0;
+
+            ob_start();
             ob_end_clean();  //清空缓存
-            header('Content-Type: application/vnd.ms-excel');
-            header("Content-Disposition: attachment;filename=".$this->result["title"].".xls");
-            header('Cache-Control: max-age=0');
-            header('Cache-Control: max-age=1');
-            header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-            header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
-            header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-            header ('Pragma: public'); // HTTP/1.0
-            $objwriter = \PHPExcel_IOFactory::createWriter($phpexcel, 'Excel5');
-            $objwriter->save('php://output');
+            Header("Content-type: application/octet-stream"); #通过这句代码客户端浏览器就能知道服务端返回的文件形式
+            Header("Accept-Ranges: bytes"); #告诉客户端浏览器返回的文件大小是按照字节进行计算的
+            Header("Content-Disposition: attachment; filename={$this->result["filename"]}.csv"); #告诉浏览器返回的文件的名称
 
+            $file = fopen("php://output", 'w');
+            fwrite($file,chr(0xEF).chr(0xBB).chr(0xBF));
+
+            if(isset($this->result["title"])&&is_array($this->result["title"])&&!empty($this->result["title"])) fputcsv($file, $this->result["title"]);
+
+            $func = function() use ($file){
+                if(isset($this->result["list"])&&!empty($this->result["list"])){
+                    array_map(function ($data) use ($file){
+                        fputcsv($file, $data);
+                        unset($data);
+                    },$this->result["list"]);
+                }
+            };
+
+            $func();//page=1先执行一次
+            $this->params["page"]++;
+            while ($this->params["page"]<=ceil($this->result["count"]/$this->params["limit"])){
+                $this->result=$callback($this->params);
+                $func();
+                $this->params["page"]++;
+                ob_flush();//刷新输出缓冲到浏览器
+                flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
+            }
+            unset($func,$callback);
+            fclose($file);
         }else{
             $this->error($this->result["msg"]);
         }
