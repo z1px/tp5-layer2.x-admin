@@ -135,8 +135,17 @@ class Account extends Common {
      */
     public function loginLog(){
 
+        $loginLog = new LoginLog();
+
+        // 导出
+        if(isset($this->params["download"])&&$this->params["download"]==1){
+            return $this->_export(function ($data) use ($loginLog){
+                return $loginLog->getList($data);
+            });
+        }
+
         if($this->request->isPost()){
-            $loginLog = new LoginLog();
+
             $this->result=$loginLog->getList($this->params);
             unset($loginLog);
             return $this->_result();
@@ -151,8 +160,16 @@ class Account extends Common {
      */
     public function behaviorLog(){
 
+        $behaviorLog = new BehaviorLog();
+
+        // 导出
+        if(isset($this->params["download"])&&$this->params["download"]==1){
+            return $this->_export(function ($data) use ($behaviorLog){
+                return $behaviorLog->getList($data);
+            });
+        }
+
         if($this->request->isPost()){
-            $behaviorLog = new BehaviorLog();
             $this->result=$behaviorLog->getList($this->params);
             unset($behaviorLog);
             return $this->_result();

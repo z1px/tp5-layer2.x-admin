@@ -239,6 +239,18 @@ button {
     color: white;
 }
 
+.kit-table .kit-table-header .kit-search-inputs-inline {
+    right: 0;
+}
+
+.kit-table .kit-table-header .kit-search-inputs-inline .layui-form-label{
+    width: auto;
+}
+
+.kit-table .kit-table-header .kit-search-inputs-inline .layui-inline>button{
+    margin-left: 15px;
+}
+
 .kit-table .kit-table-header .kit-search-btns .layui-btn {
     padding: 0 15px;
 }

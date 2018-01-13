@@ -36,20 +36,48 @@ class LoginLog extends LoginLogModel {
             $where["FROM_UNIXTIME(create_time,'%Y-%m-%d')"]=["between",array_map("trim",explode("~",$params["begin_end"]))];
         }
 
+        if(isset($params["download"])&&$params["download"]==1) { // 导出到cvs文件并下载
+            $order="id asc";
+            $callback = function ($data){
+                return array_values(array_map(function ($data){
+                    return "\t{$data}";
+                },$data));
+            };
+            if($params["page"]==1){
+                $this->result["filename"]="BehaviorLog";
+                $this->result["title"]=array_values([
+                    "id"=>"\t编号",
+                    "admin_id"=>"\t管理员ID",
+                    "username"=>"\t管理员账号",
+                    "account"=>"\t账号信息",
+                    "ip"=>"\tIP",
+                    "area"=>"\tIP区域",
+                    "create_time"=>"\t登录时间",
+                ]);
+            }else{
+                unset($this->result["filename"],$this->result["title"]);
+            }
+        }else{
+            $callback = function ($data){
+                if(isset($data["account"])&&!empty($data["account"])) $data["account"]=var_export(json_decode($data["account"],true),true);
+                return $data;
+            };
+        }
+
+        // 数据处理
+        $func = function ($list) use ($callback){
+            if(empty($list) || !is_array($list)) return [];
+            return array_map(function ($data) use ($callback){
+                return $callback($data->toArray());
+            },$list);
+        };
+
         $list=$this->field("id,admin_id,username,account,ip,area,create_time")->where($where)->page($params["page"],$params["limit"])->order($order)->select();
         $this->result["rel"]=true;
         $this->result["count"]=$this->where($where)->Count();
         unset($params,$where);
-        if(empty($list)){
-            $list=[];
-        }else{
-            foreach ($list as $key=>$value){
-                if(!empty($value->account)) $value->account=var_export(json_decode($value->account,true),true);
-                $list[$key]=$value->toArray();
-            }
-            unset($key,$value);
-        }
-        $this->result["list"]=$list;
+
+        $this->result["list"]=$func($list);
         unset($list);
         return $this->result;
     }

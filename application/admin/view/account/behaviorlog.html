@@ -4,47 +4,36 @@
 <div class="kit-table">
     <form class="layui-form" lay-filter="kit-search-form">
         <div class="kit-table-header">
-            <div class="kit-search-inputs">
-                <div class="kit-search-keyword">
-                    <input type="text" class="layui-input" name="keyword" placeholder="搜索关键字.." />
-                    <button lay-submit lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
-                </div>
-                <div class="kit-search-more" id="kit-search-more">更多筛选<i class="layui-icon">&#xe61a;</i></div>
+            <div class="kit-search-btns">
+                <a href="javascript:;" data-action="download" class="layui-btn layui-btn-sm"><i class="fa fa-cloud-download" aria-hidden="true"></i> 导出全部</a>
             </div>
-        </div>
-        <div class="kit-search-mored layui-anim layui-anim-upbit">
-            <div class="kit-search-body">
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">行为</label>
-                        <div class="layui-input-inline">
-                            <input type="text" name="title" placeholder="请输入行为" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">管理员</label>
-                        <div class="layui-input-inline">
-                            <select name="admin_id" lay-filter="" lay-search>
-                                <option value=""></option>
-                                {volist name="list_admin" id="vo"}
-                                <option value="{$vo.id}">{$vo.id} - {$vo.username}{notempty name="vo.true_name"}（{$vo.true_name}）{/notempty}</option>
-                                {/volist}
-                            </select>
-                        </div>
+            <div class="kit-search-inputs kit-search-inputs-inline">
+                <div class="layui-inline">
+                    <label class="layui-form-label">行为</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="title" placeholder="请输入行为" autocomplete="off" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">操作时间</label>
-                        <div class="layui-input-inline">
-                            <input type="text" name="begin_end" id="begin_end" placeholder="时间区间" autocomplete="off" class="layui-input">
-                        </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">管理员</label>
+                    <div class="layui-input-inline">
+                        <select name="admin_id" lay-filter="" lay-search>
+                            <option value=""></option>
+                            {volist name="list_admin" id="vo"}
+                            <option value="{$vo.id}">{$vo.id} - {$vo.username}{notempty name="vo.true_name"}（{$vo.true_name}）{/notempty}</option>
+                            {/volist}
+                        </select>
                     </div>
                 </div>
-            </div>
-            <div class="kit-search-footer">
-                <button type="reset" class="layui-btn layui-btn-sm layui-btn-primary kit-btn">重置</button>
-                <button lay-submit lay-filter="search" class="layui-btn layui-btn-sm kit-btn">确定</button>
+                <div class="layui-inline">
+                    <label class="layui-form-label">操作时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="begin_end" id="begin_end" placeholder="时间区间" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button lay-submit lay-filter="search" class="layui-btn layui-btn-sm kit-btn">搜索</button>
+                </div>
             </div>
         </div>
     </form>
