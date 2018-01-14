@@ -22,6 +22,7 @@
 
             </ul>
             <ul class="layui-nav layui-layout-right kit-nav">
+                <!--<li class="layui-nav-item"><a href="javascript:;" id="tag" style="color:#fff;"><i class="fa fa-tag" aria-hidden="true"></i>便签</a></li>-->
                 <!--<li class="layui-nav-item"><a href="javascript:;" id="msg"><i class="fa fa-envelope-o" aria-hidden="true"></i> 消息</a></li>-->
                 <li class="layui-nav-item">
                     <a href="javascript:;">
@@ -43,10 +44,12 @@
                     </a>
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" id="myinfo"><i class="fa fa-user-circle"></i> 基本资料</a></dd>
+                        <!--<dd><a href="javascript:;" id="logout"><i class="fa fa-sign-out"></i> 注销</a></dd>-->
                         <!--<dd><a href="javascript:;">安全设置</a></dd>-->
                     </dl>
                 </li>
                 <li class="layui-nav-item"><a href="javascript:;" id="logout"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a></li>
+                <!--<li class="layui-nav-item"><a href="javascript:;" id="copyright" style="color:#fff;"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></a></li>-->
             </ul>
         </div>
 
@@ -227,7 +230,58 @@
                         }
                     });
                 });
-            })
+            });
+            $('#copyright').click(function(){
+                var date=new Date;
+                var html = '';
+                html += '<style type="text/css">#copyrights{padding: 10px;} #copyrights p {padding: 10px 0 0 0;} #copyrights a {margin-top: 10px;}</style>';
+                html += '<p>ThinkPHP 版本：<?php echo THINK_VERSION; ?></p></p>';
+                html += '<p>LayUI 版本：'+layui.v+'</p>';
+                html += '<a href="https://github.com/z1px/tp5_layer2.x.git" class="layui-btn" target="_blank">下载最新版</a>';
+                html += '<p>关于版权<hr></p>';
+                html += '<blockquote class="layui-elem-quote">KIT遵循Apache2开源协议发布，并提供免费使用。请了解Apache2开源协议后再作为开源或商业软件发布。</blockquote>';
+                html += '<p>© '+date.getFullYear()+' MIT license 版权所有</p>';
+                layer.open({
+                    type:1,
+                    title:'版本信息',
+                    area: ['290px', 'calc(100% - 52px)'],
+                    offset: 'rb',
+                    shadeClose:true,
+                    id:'copyrights',
+                    anim: 2, // 弹出动画
+                    shade:0.2,
+                    closeBtn:0,
+                    isOutAnim:false,
+                    resize:false,
+                    skin: 'color-class',
+                    content:html
+                });
+            });
+            $('#tag').click(function(){
+                var tag = localStorage.getItem("tag");
+                layer.prompt({
+                    formType: 2,
+                    anim: 1,
+                    offset: ['52px', 'calc(100% - 500px)'],
+                    value: tag,
+                    title: '便签 => 是存在本地的',
+                    skin: 'demo-class',
+                    area: ['280px', '150px'],
+                    id: 'remember' ,//设定一个id，防止重复弹出
+                    btn: ['保存', '删除'],
+                    shade: 0,
+                    moveType: 1, //拖拽模式，0或者1
+                    btn2: function(index, layero){
+                        localStorage.removeItem("tag");
+                        $('#remember textarea').val('');
+                        layer.tips('删除成功...', "#remember", {tips: 1, time: 3000});
+                        return false;
+                    }
+                },function(value, index, elem){
+                    localStorage.setItem("tag",value);
+                    layer.tips('已保存...', "#remember", {tips: 1, time: 3000});
+                })
+            });
         });
     </script>
 </body>
