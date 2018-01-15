@@ -182,4 +182,53 @@ class Common extends Controller{
         }
     }
 
+    //刷新文本输出缓冲到浏览器
+    protected function _flush($file){
+        Config::set('default_return_type','html');
+        ini_set('max_execution_time', '0'); // 设置不超时
+
+        ob_start();
+        ob_end_clean();  //清空缓存
+
+        //打开文件并将指针指向最后一行
+        $func = function ($file){
+            if(!is_file($file)) exit("Unable to open file!");
+            $fp = fopen($file, "r");
+            $pos = -2;      //偏移量
+            $eof = " ";     //行尾标识
+            while ($eof != "\n"){ //不是行尾
+                fseek($fp, $pos, SEEK_END);//fseek成功返回0，失败返回-1
+                $eof = fgetc($fp);//读取一个字符并赋给行尾标识
+                $pos--;//向前偏移
+            }
+            unset($pos,$eof);
+            return $fp;
+        };
+        //打开文件并设定位置等于 offset 字节
+        $func1 = function ($file,$pos){
+            if(!is_file($file)) exit("Unable to open file!");
+            $fp = fopen($file, "r");
+            fseek($fp, $pos, SEEK_SET);//fseek成功返回0，失败返回-1
+            return $fp;
+        };
+
+        $fp = $func($file);
+        $pos = ftell($fp);
+        while (true){
+            if(feof($fp)){
+                $fp = $func1($file,$pos);
+                echo ".";
+            }else{
+                while ($r = fgets($fp)){
+                    echo $r,"<br/>";
+                }
+                $pos = ftell($fp);
+                ob_flush();//刷新输出缓冲到浏览器
+                flush();//必须同时使用 ob_flush() 和flush() 函数来刷新输出缓冲。
+                sleep(1);
+            }
+        }
+        fclose($fp);
+    }
+
 }
