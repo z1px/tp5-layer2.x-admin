@@ -189,7 +189,7 @@ class Common extends Controller{
 
         if (ob_get_level() != 0) ob_end_clean(); //缓冲块的序列号
 
-        ob_start();
+        ob_start();//打开缓冲区
         ob_clean();  //清空缓存
 
         //打开文件并将指针指向最后一行
@@ -231,7 +231,7 @@ class Common extends Controller{
             }
         }
         fclose($fp);
-        ob_end_flush();
+        ob_end_flush();//发送缓冲区数据，并关闭缓冲区
     }
 
 }
