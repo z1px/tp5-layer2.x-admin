@@ -187,12 +187,14 @@ class Common extends Controller{
         Config::set('default_return_type','html');
         ini_set('max_execution_time', '0'); // 设置不超时
 
+        if (ob_get_level() != 0) ob_end_clean(); //缓冲块的序列号
+
         ob_start();
-        ob_end_clean();  //清空缓存
+        ob_clean();  //清空缓存
 
         //打开文件并将指针指向最后一行
         $func = function ($file){
-            if(!is_file($file)) exit("Unable to open file!");
+            if(!is_file($file)) exit("file path：{$file}，Unable to open file!");
             $fp = fopen($file, "r");
             $pos = -2;      //偏移量
             $eof = " ";     //行尾标识
@@ -206,7 +208,7 @@ class Common extends Controller{
         };
         //打开文件并设定位置等于 offset 字节
         $func1 = function ($file,$pos){
-            if(!is_file($file)) exit("Unable to open file!");
+            if(!is_file($file)) exit("file path：{$file}，Unable to open file!");
             $fp = fopen($file, "r");
             fseek($fp, $pos, SEEK_SET);//fseek成功返回0，失败返回-1
             return $fp;
@@ -229,6 +231,7 @@ class Common extends Controller{
             }
         }
         fclose($fp);
+        ob_end_flush();
     }
 
 }
