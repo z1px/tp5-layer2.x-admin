@@ -239,15 +239,23 @@ button {
     color: white;
 }
 
-.kit-table .kit-table-header .kit-search-inputs-inline {
+.kit-table .kit-table-header-inline {
+    height: 60px;
+}
+
+.kit-table .kit-table-header-inline .kit-search-btns{
+    padding: 15px 10px;
+}
+
+.kit-table .kit-table-header-inline .kit-search-inputs{
     right: 0;
 }
 
-.kit-table .kit-table-header .kit-search-inputs-inline .layui-form-label{
+.kit-table .kit-table-header-inline .kit-search-inputs .layui-form-label{
     width: auto;
 }
 
-.kit-table .kit-table-header .kit-search-inputs-inline .layui-inline>button{
+.kit-table .kit-table-header .kit-search-inputs .layui-inline>button{
     margin-left: 15px;
 }
 
