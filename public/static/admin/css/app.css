@@ -249,6 +249,7 @@ button {
 
 .kit-table .kit-table-header-inline .kit-search-inputs{
     right: 0;
+    padding-right: 10px;
 }
 
 .kit-table .kit-table-header-inline .kit-search-inputs .layui-form-label{
@@ -256,7 +257,8 @@ button {
 }
 
 .kit-table .kit-table-header .kit-search-inputs .layui-inline>button{
-    margin-left: 15px;
+    margin-left: 10px;
+    padding: 0 15px;
 }
 
 .kit-table .kit-table-header .kit-search-btns .layui-btn {
