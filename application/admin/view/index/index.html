@@ -39,7 +39,7 @@
                 </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;">
-                        <img src="{empty name="account.img"}__ADMIN_IMAGE__/0.jpg{else/}{$account.img}{/empty}" class="layui-nav-img" id="mylogo" />
+                        <img src="{empty name='account.img'}__ADMIN_IMAGE__/0.jpg{else/}{$account.img}{/empty}" class="layui-nav-img" id="mylogo" />
                         <span>{notempty name="account.username"}{$account.username}{/notempty}</span>
                     </a>
                     <dl class="layui-nav-child">
@@ -71,9 +71,13 @@
             <!-- 底部固定区域 -->
             <script>var date=new Date;document.write(date.getFullYear());</script></a> &copy;
             <a href="javascript:"><script>document.write(window.location.host);</script></a> MIT license
-
         </div>
     </div>
+
+    <div class="kit-tree-mobile layui-hide">
+        <i class="layui-icon">&#xe602;</i>
+    </div>
+    <div class="kit-mobile-shade"></div>
 
     <script type="text/javascript" src="__JS__/jquery-3.2.1.min.js"></script>
     <script src="__PLUGINS__/layui/layui.js"></script>

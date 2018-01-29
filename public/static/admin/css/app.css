@@ -186,13 +186,13 @@ button {
     position: relative;
     /* width: 85%;
     margin: 55px auto; */
-    box-shadow: 0px 1px 7px 0px #cccccc;
+    box-shadow: 0 1px 7px 0 #cccccc;
 }
 
 .kit-table .kit-table-header {
     height: 50px;
     position: relative;
-    box-shadow: 0px 1px 7px 0px #cccccc;
+    box-shadow: 0 1px 7px 0 #cccccc;
 }
 
 .kit-table .kit-table-header .kit-search-btns {
@@ -397,7 +397,7 @@ button {
 
 /* @media screen and (max-width: 992px) { */
 
-@media (max-width: 992px) {
+@media (max-width: 992px) and (min-width: 750px) {
     .kit-layout-admin .layui-body,
     .kit-layout-admin .layui-footer {
         left: 50px;
@@ -437,5 +437,59 @@ button {
     .kit-sided .layui-nav-tree .layui-nav-child a,
     .kit-side .layui-nav-tree .layui-nav-child a {
         padding-left: 0;
+    }
+}
+
+@keyframes fade-in {
+    0% {width: 0;}/*初始状态 透明度为0*/
+    /*40% {opacity: 0.4;}!*过渡状态 透明度为0*!*/
+    100% {width: 200px;}/*结束状态 透明度为1*/
+}
+@-webkit-keyframes fade-in {/*针对webkit内核*/
+    0% {width: 0;}
+    /*40% {opacity: 0.4;}*/
+    100% {width: 200px;}
+}
+
+@media (max-width: 750px) {
+    .kit-layout-admin .layui-body,
+    .kit-layout-admin .layui-footer{
+        left: 0;
+    }
+    .kit-layout-admin .layui-side{
+        display: none;
+    }
+    .kit-side .layui-side-scroll .kit-side-fold {
+        display: none;
+    }
+
+    .kit-layout-admin .layui-logo,
+    .kit-layout-admin .kit-logo-mobile {
+        display: none;
+    }
+
+    .kit-theme .kit-side{
+        top: 0;
+    }
+
+    /*.kit-layout-admin ul.layui-layout-right li.layui-nav-item{
+        display: none;
+    }
+
+    .kit-layout-admin ul.layui-layout-right li.layui-nav-item:last-child{
+        display: block;
+    }*/
+
+    .kit-tree-mobile{display: block!important; position: fixed; z-index: 100000; bottom: 15px; left: 15px; width: 50px; height: 50px; line-height: 50px; border-radius: 2px; text-align: center; background-color: rgba(0,0,0,.7); color: #fff;}
+    .kit-mobile .kit-tree-mobile{display: none !important;}
+    .kit-mobile .kit-tree{left: 0;}
+    .kit-mobile .kit-mobile-shade{content: ''; position: fixed; top: 0; bottom: 0; left: 0; right: 0; background-color: rgba(0,0,0,.8); z-index: 9999;}
+    .kit-tree-mobile i{font-size: 20px;}
+
+    .kit-mobile .kit-layout-admin .kit-side{top: 0; display: block; z-index: 10000;}
+    .kit-mobile .kit-layout-admin .kit-side{
+        animation: fade-in;/*动画名称*/
+        animation-duration: 0.3s;/*动画持续时间*/
+        -webkit-animation:fade-in 0.3s;/*针对webkit内核*/
     }
 }

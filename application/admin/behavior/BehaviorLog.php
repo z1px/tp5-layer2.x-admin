@@ -45,31 +45,30 @@ class BehaviorLog {
         $row["title"] = $authRule->where(["lower(name)"=>strtolower($extra["request"]->module()."/".$extra["request"]->controller()."/".$extra["request"]->action())])->value("title");
         unset($authRule);
         if($extra["request"]->isGet()){
-            $row["type"][]="get";
+            $row["type"]="get";
         }elseif($extra["request"]->isPost()){
-            $row["type"][]="post";
+            $row["type"]="post";
         }elseif($extra["request"]->isPut()){
-            $row["type"][]="put";
+            $row["type"]="put";
         }elseif($extra["request"]->isDelete()){
-            $row["type"][]="delete";
+            $row["type"]="delete";
         }elseif($extra["request"]->isAjax()){
-            $row["type"][]="ajax";
+            $row["type"]="ajax";
         }elseif($extra["request"]->isPjax()){
-            $row["type"][]="pjax";
+            $row["type"]="pjax";
         }elseif($extra["request"]->isMobile()){
-            $row["type"][]="mobile";
+            $row["type"]="mobile";
         }elseif($extra["request"]->isHead()){
-            $row["type"][]="head";
+            $row["type"]="head";
         }elseif($extra["request"]->isPatch()){
-            $row["type"][]="patch";
+            $row["type"]="patch";
         }elseif($extra["request"]->isOptions()){
-            $row["type"][]="options";
+            $row["type"]="options";
         }elseif($extra["request"]->isCli()){
-            $row["type"][]="cli";
+            $row["type"]="cli";
         }elseif($extra["request"]->isCgi()){
-            $row["type"][]="cgi";
+            $row["type"]="cgi";
         }
-        $row["type"]=implode("|",$row["type"]);
 
         $behaviorLog=new BehaviorLogModel();
         $behaviorLog->save($row);

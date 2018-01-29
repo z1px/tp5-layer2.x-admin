@@ -4,16 +4,8 @@
  * LICENSE:MIT
  */
 var tab;
-layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar', 'onelevel', 'laytpl', 'spa'], function(exports) {
-    var $ = layui.jquery,
-        element = layui.element,
-        layer = layui.layer,
-        _win = $(window),
-        _doc = $(document),
-        _body = $('.kit-body'),
-        form = layui.form,
-        table = layui.table,
-        loader = layui.loader,
+layui.define(['tab', 'navbar', 'onelevel', 'spa'], function(exports) {
+    var layer = layui.layer,
         navbar = layui.navbar,
         spa = layui.spa;
     tab = layui.tab;
@@ -88,17 +80,17 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                     }
                 }).render();
                 //navbar加载方式一，直接绑定已有的dom元素事件                
-                navbar.bind(function(data) {
-                    tab.tabAdd(data);
-                });
-                //navbar加载方式二，设置远程地址加载
-                // navbar.set({
-                //     remote: {
-                //         url: '/datas/navbar1.json'
-                //     }
-                // }).render(function(data) {
+                // navbar.bind(function(data) {
                 //     tab.tabAdd(data);
                 // });
+                //navbar加载方式二，设置远程地址加载
+                navbar.set({
+                    remote: {
+                        url: _config.url_navbar
+                    }
+                }).render(function(data) {
+                    tab.tabAdd(data);
+                });
                 //navbar加载方式三，设置data本地数据
                 // navbar.set({
                 //     data: [{
@@ -229,6 +221,16 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
             return that;
         }
     };
+
+    //手机设备的简单适配
+    var treeMobile = $('.kit-tree-mobile'),
+        shadeMobile = $('.kit-mobile-shade');
+    treeMobile.on('click', function () {
+        $('body').addClass('kit-mobile');
+    });
+    shadeMobile.on('click', function () {
+        $('body').removeClass('kit-mobile');
+    });
 
     //输出test接口
     exports('app', app);
